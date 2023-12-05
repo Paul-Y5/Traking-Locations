@@ -1,7 +1,7 @@
 import requests
 
 # Base URL for the API
-base_url = "https://api.geoapify.com/v2/c52d76f1b1194b169fabf140cf9f329b"
+base_url = "https://api.geoapify.com/v2/3b217b38a08846b19772470894a181b7"
 
 def get_posts():
     """Get all posts."""
@@ -16,7 +16,7 @@ def get_posts_by_user(userId):
 
     # Create a dictionary with key:value pairs to pass in the URL query string
     params = {'userId': userId}
-    response = requests.get(f"{base_url}/posts", params=params)
+    response = requests.get(f"{base_url}", params=params)
         # The params= argument is encoded in the URL query string.
 
     #print(response.request.url)  # Uncomment to see the constructed URL
