@@ -6,10 +6,3 @@ response = requests.get(url)
 print(url)
 print(response.json())
 
-headers = CaseInsensitiveDict()
-headers["Accept"] = "application/json"
-
-resp = requests.get(url, headers=headers)
-
-print(resp.status_code)
-print(resp.content)
