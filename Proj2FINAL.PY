@@ -1,14 +1,16 @@
 import requests
 from requests.structures import CaseInsensitiveDict
 
-
-def categories_list():
+def list_of_categories():
     '''função que coloca as categorias de categories.txt numa lista'''
-    categories_list = []
+    categories_list_n = []
     with open('categories.txt', 'r', encoding='utf-8') as file:
         for line in file:
-            line.strip()
-            categories_list.append(line)
+            line.strip().split(' ')
+            categories_list_n.append(line)
+        
+        categories_list = [s.replace('\n', '') for s in categories_list_n]
+    
     return categories_list
 
 def get_info(url):
@@ -28,6 +30,68 @@ def get_info(url):
     
     return info_list
 
+def validate_coords(place):
+    '''Verifica se as coordenadas estão de acordo com o pedido na URL'''
+    virgula_count = 0
+
+    for character in place:
+        if character.isnumeric():
+            continue
+        elif character == ',' and virgula_count < 1:
+            virgula_count += 1
+            continue
+        else:
+            print('Formato das coordenadas incorreto!')
+            return False
+    
+    coords_list = place.replace(',', ' ').split()
+    
+    if float(coords_list[0]) < -90 or float(coords_list[0]) > 90 or (float(coords_list[1]) < -90 or float(coords_list[1]) > 90):
+        print('Formato das coordenadas incorreto!')
+        return False
+    else:
+        return True
+
+
+def validate_categories(category):
+    '''Verifica se as categorias estão de acordo com o pedido na URL'''
+    for character in category:
+        if character.isalpha():
+            continue
+        elif character == ',' or character == '.':
+            continue
+        else:
+            print('Formato das categorias incorreto!')
+            return False
+
+    users_categories_list = category.replace(',', ' ').split()
+
+    for categories in users_categories_list:
+        if categories not in list_of_categories():
+            print(list_of_categories())
+            print(users_categories_list)
+            print(categories in list_of_categories())
+            print('Formato das categorias incorreto!')
+            return False
+        else:
+            return True
+
+
+def validate_radius(radius):
+    '''Verifica se o raio estão de acordo com o pedido na URL'''
+    for num in radius:
+        not_num = 0
+        if num.isnumeric():
+            continue
+        else:
+            not_num += 1
+    
+    if not_num == 0:
+        return True
+    else: 
+        return False
+    
+    
 def main():
     '''função principal'''
     
@@ -37,10 +101,17 @@ def main():
     place = input('Place coordinates (lon,lat): ')
     category = input('Category to search for: ')
     radius = input('Circle radius: ')
+
     
-    url = (f'{base_url}categories={category}&filter=circle:{place},{radius}&bias=proximity:{place}&limit=20&apiKey={apiKey}')
     
-    print(get_info(url))
+    url = (f'{base_url}categories={category}&filter=circle:{place},{radius}&bias=proximity:{place}&limit=20&apiKey={apiKey}') if (validate_coords(place) and validate_categories(category) and validate_radius(radius)) else main()
+    
+    places_info = get_info(url)
+    
+    for item in places_info:
+        print(item)
+        print('-------------------------------------------------')
+
 
 if __name__ == '__main__':
     main()
