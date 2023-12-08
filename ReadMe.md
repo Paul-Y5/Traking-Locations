@@ -4,3 +4,5 @@ vê se consegues para ficar mais simples
 
 Depois, fiz umas funcoes pra validar os inputs, ns se era preciso mas faz sentido, acho eu.
 
+Na função de validar o raio ns ate q ponto é q na URL so se pode meter inteiros ou floats tb. 
+De qualquer maneiar é so ver a documentação, ent pode ser preciso alterar essa
