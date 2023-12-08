@@ -56,9 +56,7 @@ def validate_coords(place):
 def validate_categories(category):
     '''Verifica se as categorias estão de acordo com o pedido na URL'''
     for character in category:
-        if character.isalpha():
-            continue
-        elif character == ',' or character == '.':
+        if character.isalpha() or character == ',' or character == '.':
             continue
         else:
             print('Formato das categorias incorreto!')
