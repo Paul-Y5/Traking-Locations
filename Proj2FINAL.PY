@@ -80,8 +80,8 @@ def validate_categories(category):
 def validate_radius(radius):
     '''Verifica se o raio estão de acordo com o pedido na URL'''
     not_num = 0
+    
     for num in radius:
-       
         if num.isnumeric():
             continue
         else:
