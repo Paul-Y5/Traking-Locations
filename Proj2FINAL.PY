@@ -68,9 +68,6 @@ def validate_categories(category):
 
     for categories in users_categories_list:
         if categories not in list_of_categories():
-            print(list_of_categories())
-            print(users_categories_list)
-            print(categories in list_of_categories())
             print('Formato das categorias incorreto!')
             return False
         else:
