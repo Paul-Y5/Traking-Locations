@@ -13,17 +13,20 @@ def categories_list():
 
 def get_info(url):
     '''Informação útil acerca do local e categorias escolhidas pelo utilizador'''
-    places_usefull_info_list = []
+    usefull_info_list = []
     headers = CaseInsensitiveDict()
     headers["Accept"] = "application/json"
     response = requests.get(url, headers=headers)
     json_response = response.json()
-    places_info_list = (json_response.get('features'))
+    info_list = (json_response.get('features'))
     
-    for item in places_info_list:
-        item
-
-    return places_info_list
+    for item in info_list:
+        place_property_dict = item.get('properties')
+        place_property_dict.pop('datasource')
+        place_property_dict.pop('place_id')
+        usefull_info_list.append(place_property_dict)
+    
+    return usefull_info_list
 
 def main():
     '''função principal'''
