@@ -30,31 +30,46 @@ def get_info(url):
     
     return info_list
 
+
 def validate_coords(place):
     '''Verifica se as coordenadas estão de acordo com o pedido na URL'''
     virgula_count = 0
+    valid = True
 
     for character in place:
-        if character.isnumeric():
+        if character.isnumeric() or character == '-' or character == '.':
             continue
         elif character == ',' and virgula_count < 1:
             virgula_count += 1
             continue
         else:
             print('Formato das coordenadas incorreto!')
-            return False
+            valid = False
     
-    coords_list = place.replace(',', ' ').split()
-    
-    if float(coords_list[0]) < -90 or float(coords_list[0]) > 90 or (float(coords_list[1]) < -90 or float(coords_list[1]) > 90):
-        print('Formato das coordenadas incorreto!')
-        return False
+    if valid:
+        try:
+            coords_list = place.replace(',', ' ').split()
+            latitude, longitude = map(float, coords_list)
+            
+            if -90 <= latitude <= 90 and -180 <= longitude <= 180:
+                pass
+            
+            else:
+                print('Coordenadas fora do intervalo permitido!')
+                valid = False
+        
+        except ValueError:
+            print('Formato das coordenadas incorreto!')
+            valid = False
     else:
-        return True
+        pass
+    
+    return valid
 
 
 def validate_categories(category):
     '''Verifica se as categorias estão de acordo com o pedido na URL'''
+    validate = True
     for character in category:
         if character.isalpha() or character == ',' or character == '.':
             continue
@@ -64,46 +79,56 @@ def validate_categories(category):
 
     users_categories_list = category.replace(',', ' ').split()
 
-    for categories in users_categories_list:
-        if categories not in set_of_categories():
-            print('Formato das categorias incorreto!')
-            validate = False
-            break
-        else:
-            validate = True
-    
+    if validate == False:
+        pass
+    else:
+        for categories in users_categories_list:
+            if categories not in set_of_categories():
+                print('Formato das categorias incorreto!')
+                validate = False
+                break
+       
     return validate
 
 
 def validate_radius(radius):
     '''Verifica se o raio estão de acordo com o pedido na URL'''
     not_num = 0
-    
+    ponto_count = 0
+    valid = True
     for num in radius:
-        if num.isnumeric():
+        if num.isnumeric() or (num == '.' and ponto_count < 2):
             continue
         else:
             not_num += 1
     
     if not_num == 0:
-        return True
+        pass
     else:
         print('Valor para raio não suportado!')
-        return False
+        valid = False
+    
+    return valid
 
-def print_info(info):
+
+def print_info(info, category):
     print("{:^40s} {:^40s} {:^20s} {:^20s} {:^10s} {:^15s}".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
     print()
     for dic in info:
         if dic.get('name', '') == '':
             continue
         else:
+            users_categories_list = category.replace(',', ' ').split()
             tipo_atração = '' 
+            
             for item in dic.get('categories'):
                 if '.' in item:
                     continue
                 else:
-                    tipo_atração += item.capitalize() + ' '
+                    tipo_atração += (item.capitalize() + ', ') if (item in users_categories_list) else ''
+            print(f"Debug: tipo_atração: '{tipo_atração}'")
+            if tipo_atração[-2] == ',':
+                tipo_atração = tipo_atração[:-2] + tipo_atração[-1]
 
             name = dic.get('name')
             latitude = round(dic.get('lat', 0), 2)
@@ -120,23 +145,21 @@ def main():
     base_url = "https://api.geoapify.com/v2/places?"
     apiKey = '5151ac446fb14f58b87dda914081fd3d'
     
-    coords = input('Place coordinates (lat,lon): ').split(',')
-
-    #colocar só quando a verificação for feita. Como a verificação das coordenadas n está a funcionar meti aqui.
-    coords1 = str(coords[0])
-    coords2 = str(coords[1])
-    coords_reverse = coords2 + ',' + coords1
-
+    coords = input('Place coordinates (lat,lon): ')
     category = input('Category to search for: ')
     radius = input('Circle radius: ')
 
-    
-    
-    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_categories(category) and validate_radius(radius)) else main()
+    if validate_coords(coords):
+        coords.split(',')
+        coords1 = str(coords[0])
+        coords2 = str(coords[1])
+        coords_reverse = coords2 + ',' + coords1
+
+    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') #if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()
     
     places_info = get_info(url)
     
-    print_info(places_info)
+    print_info(places_info, category)
 
 
 if __name__ == '__main__':
