@@ -2,17 +2,16 @@ import requests
 from requests.structures import CaseInsensitiveDict
 from timezonefinder import TimezoneFinder 
 
-def list_of_categories():
-    '''função que coloca as categorias de categories.txt numa lista'''
-    categories_list_n = []
+def set_of_categories():
+    '''função que coloca as categorias de categories.txt num conjunto'''
+    categories_set = set()
     with open('categories.txt', 'r', encoding='utf-8') as file:
         for line in file:
-            line.strip().split(' ')
-            categories_list_n.append(line)
+            category = line.strip()
+            categories_set.add(category)
         
-        categories_list = [s.replace('\n', '') for s in categories_list_n]
-    
-    return categories_list
+    return categories_set
+
 
 def get_info(url):
     '''Informação útil acerca do local e categorias escolhidas pelo utilizador'''
@@ -61,16 +60,19 @@ def validate_categories(category):
             continue
         else:
             print('Formato das categorias incorreto!')
-            return False
+            validate = False
 
     users_categories_list = category.replace(',', ' ').split()
 
     for categories in users_categories_list:
-        if categories not in list_of_categories():
+        if categories not in set_of_categories():
             print('Formato das categorias incorreto!')
-            return False
+            validate = False
+            break
         else:
-            return True
+            validate = True
+    
+    return validate
 
 
 def validate_radius(radius):
@@ -90,7 +92,7 @@ def validate_radius(radius):
         return False
 
 def print_info(info):
-    print("{:^20s} {:^40s} {:^20s} {:^20s} {:^10s} {:^15s}".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
+    print("{:^40s} {:^40s} {:^20s} {:^20s} {:^10s} {:^15s}".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
     print()
     for dic in info:
         if dic.get('name', '') == '':
@@ -103,13 +105,13 @@ def print_info(info):
                 else:
                     tipo_atração += item.capitalize() + ' '
 
-            name = dic.get('name', 'Not found')
+            name = dic.get('name')
             latitude = round(dic.get('lat', 0), 2)
             longitude = round(dic.get('lon', 0), 2)
             local = dic.get('city', 'Not found') 
             distance = dic.get('distance', 'Not found')
             fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
-            print(f"{tipo_atração:^20} {name:^40} {local:^20} {str(latitude) + ', ' + str(longitude):^20} {distance:^10} {fuso_horario:^15}")
+            print(f"{tipo_atração:^40} {name:^40} {local:^20} {str(latitude) + ', ' + str(longitude):^20} {distance:^10} {fuso_horario:^15}")
         
             
 def main():
