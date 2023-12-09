@@ -7,4 +7,4 @@
 
 - para o time zone funcionar tens de fazer 'pip install timezonefinder' no terminal
 
-- por algum motivo n esta a printar nada
+

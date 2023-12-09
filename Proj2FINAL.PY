@@ -69,26 +69,26 @@ def validate_coords(place):
 
 def validate_categories(category):
     '''Verifica se as categorias estão de acordo com o pedido na URL'''
-    validate = True
+    valid = True
     for character in category:
         if character.isalpha() or character == ',' or character == '.':
             continue
         else:
             print('Formato das categorias incorreto!')
-            validate = False
+            valid = False
 
     users_categories_list = category.replace(',', ' ').split()
 
-    if validate == False:
+    if valid == False:
         pass
     else:
         for categories in users_categories_list:
             if categories not in set_of_categories():
                 print('Formato das categorias incorreto!')
-                validate = False
+                valid = False
                 break
        
-    return validate
+    return valid
 
 
 def validate_radius(radius):
@@ -112,33 +112,40 @@ def validate_radius(radius):
 
 
 def print_info(info, category):
-    print("{:^40s} {:^40s} {:^20s} {:^20s} {:^10s} {:^15s}".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
-    print()
-    for dic in info:
-        if dic.get('name', '') == '':
-            continue
-        else:
-            users_categories_list = category.replace(',', ' ').split()
-            tipo_atração = '' 
-            
-            for item in dic.get('categories'):
-                if '.' in item:
-                    continue
-                else:
-                    tipo_atração += (item.capitalize() + ', ') if (item in users_categories_list) else ''
-            print(f"Debug: tipo_atração: '{tipo_atração}'")
-            if tipo_atração[-2] == ',':
-                tipo_atração = tipo_atração[:-2] + tipo_atração[-1]
+    count = 0
+    distancia_total = 0
+    if len(info) == 0:
+        print('Nenhuma informação encontrada sobre o local!') 
+    else:
+        print("{:^40s} {:^40s} {:^20s} {:^20s} {:^10s} {:^15s}".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
+        print()
+        for dic in info:
+            if dic.get('name', '') == '':
+                continue
+            else:
+                users_categories_list = category.replace(',', ' ').split()
+                tipo_atração = '' 
+                
+                for item in dic.get('categories'):
+                    if '.' in item:
+                        continue
+                    else:
+                        tipo_atração += (item.capitalize() + ', ') if (item in users_categories_list) else ''
+                
+                if tipo_atração[-2] == ',':
+                    tipo_atração = tipo_atração[:-2] + tipo_atração[-1]
 
-            name = dic.get('name')
-            latitude = round(dic.get('lat', 0), 2)
-            longitude = round(dic.get('lon', 0), 2)
-            local = dic.get('city', 'Not found') 
-            distance = dic.get('distance', 'Not found')
-            fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
-            print(f"{tipo_atração:^40} {name:^40} {local:^20} {str(latitude) + ', ' + str(longitude):^20} {distance:^10} {fuso_horario:^15}")
-        
-            
+                name = dic.get('name')
+                latitude = round(dic.get('lat', 0), 2)
+                longitude = round(dic.get('lon', 0), 2)
+                local = dic.get('city', 'Not found') 
+                distance = dic.get('distance', 'Not found')
+                fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
+                print(f"{tipo_atração:^40} {name:^40} {local: ^20} {str(latitude) + ', ' + str(longitude):^20} {distance:^10} {fuso_horario:^15}")
+                count += 1
+                distancia_total += distance
+        print(f'Foram encontradas {count} atrações segundo as categorias indicadas!')
+        print(f'A distância média às atrações é de {distancia_total / count} m')            
 def main():
     '''função principal'''
     
@@ -150,12 +157,13 @@ def main():
     radius = input('Circle radius: ')
 
     if validate_coords(coords):
-        coords.split(',')
-        coords1 = str(coords[0])
-        coords2 = str(coords[1])
+        coords_list = coords.split(',')
+        coords1 = str(coords_list[0])
+        coords2 = str(coords_list[1])
         coords_reverse = coords2 + ',' + coords1
+        print(coords_reverse)
 
-    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') #if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()
+    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()
     
     places_info = get_info(url)
     
