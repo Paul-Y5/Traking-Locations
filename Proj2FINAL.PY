@@ -1,5 +1,6 @@
 import requests
 from requests.structures import CaseInsensitiveDict
+from timezonefinder import TimezoneFinder 
 
 def list_of_categories():
     '''função que coloca as categorias de categories.txt numa lista'''
@@ -87,27 +88,53 @@ def validate_radius(radius):
     else:
         print('Valor para raio não suportado!')
         return False
-    
-    
+
+def print_info(info):
+    print("{:^20s} {:^40s} {:^20s} {:^20s} {:^10s} {:^15s}".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
+    print()
+    for dic in info:
+        if dic.get('name', '') == '':
+            continue
+        else:
+            tipo_atração = '' 
+            for item in dic.get('categories'):
+                if '.' in item:
+                    continue
+                else:
+                    tipo_atração += item.capitalize() + ' '
+
+            name = dic.get('name', 'Not found')
+            latitude = round(dic.get('lat', 0), 2)
+            longitude = round(dic.get('lon', 0), 2)
+            local = dic.get('city', 'Not found') 
+            distance = dic.get('distance', 'Not found')
+            fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
+            print(f"{tipo_atração:^20} {name:^40} {local:^20} {str(latitude) + ', ' + str(longitude):^20} {distance:^10} {fuso_horario:^15}")
+        
+            
 def main():
     '''função principal'''
     
     base_url = "https://api.geoapify.com/v2/places?"
     apiKey = '5151ac446fb14f58b87dda914081fd3d'
     
-    place = input('Place coordinates (lon,lat): ')
+    coords = input('Place coordinates (lat,lon): ').split(',')
+
+    #colocar só quando a verificação for feita. Como a verificação das coordenadas n está a funcionar meti aqui.
+    coords1 = str(coords[0])
+    coords2 = str(coords[1])
+    coords_reverse = coords2 + ',' + coords1
+
     category = input('Category to search for: ')
     radius = input('Circle radius: ')
 
     
     
-    url = (f'{base_url}categories={category}&filter=circle:{place},{radius}&bias=proximity:{place}&limit=20&apiKey={apiKey}') if (validate_coords(place) and validate_categories(category) and validate_radius(radius)) else main()
+    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_categories(category) and validate_radius(radius)) else main()
     
     places_info = get_info(url)
     
-    for item in places_info:
-        print(item)
-        print('-------------------------------------------------')
+    print_info(places_info)
 
 
 if __name__ == '__main__':
