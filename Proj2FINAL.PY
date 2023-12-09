@@ -168,10 +168,6 @@ def main():
     
     print_info(places_info, category)
 
-
 if __name__ == '__main__':
     main()
-    
-
-
 
