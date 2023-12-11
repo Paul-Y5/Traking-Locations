@@ -1,4 +1,5 @@
 import requests
+from time import sleep
 from requests.structures import CaseInsensitiveDict
 from timezonefinder import TimezoneFinder 
 
@@ -28,7 +29,6 @@ def get_info(url):
         place_property_dict.pop('place_id')
         info_list.append(place_property_dict)
     
-    print(info_list)
     return info_list
 
 
@@ -112,11 +112,26 @@ def validate_radius(radius):
     return valid
 
 
-def order_to(order, url):
-    list_info = get_info(url)
-    if order not in [0, 1, 2]:
-        ...
-    
+def order_to(order, places_info):
+    info = []
+    if order == '0':
+        for dic in places_info:
+            if 'distance' in dic.keys():
+                info.append(dic)
+        Info = sorted(places_info, key= lambda v: v['distance'])
+        return Info
+    elif order == "1":
+        for dic in places_info:
+            if 'categories' in dic.keys():
+                info.append(dic)
+        Info = sorted(places_info, key= lambda v: v['categories'])
+        return Info
+    elif order == "2":
+        for dic in places_info:
+            if 'name' in dic.keys():
+                info.append(dic)
+        Info = sorted(info, key= lambda v: v['name'])
+        return Info
 
 
 def print_info(info, category):
@@ -125,7 +140,7 @@ def print_info(info, category):
     if len(info) == 0:
         print('Nenhuma informação encontrada sobre o local!') 
     else:
-        print("| {:^40s} | {:^40s} | {:^20s} | {:^20s} | {:^10s} | {:^15s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
+        print("| {:^40s} | {:^40s} | {:^20s} | {:^20s} | {:^13s} | {:^15s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
         for dic in info:
             if dic.get('name', '') == '':
                 continue
@@ -155,6 +170,21 @@ def print_info(info, category):
         print()
         print(f'Foram encontradas {count} atrações segundo as categorias indicadas!')
         print(f'A distância média às atrações é de {round(distancia_total / count)} m')
+
+def info_extra(extra_info, places_info):
+    if extra_info in ['S']:
+        print('-' * 30)
+        print('Aqui estão algumas informações extra:')
+        print()
+        for dic in places_info:
+            if 'name' in dic.keys():
+                print(f"{dic['name']}: País: {dic['country']} [{dic['country_code']}]; Distrito:{dic['county']}; endereço: {dic['address_line2']}")
+                print('=' * 30)
+                sleep(0.2)
+        print('Obrigado pela preferência! Volte sempre!')
+    elif extra_info in ['N']:
+        print('Obrigado pela preferência! Volte sempre!')
+
         
                     
 def main():
@@ -167,6 +197,11 @@ def main():
     category = input('Category to search for: ')
     radius = input('Circle radius: ')
 
+    order_list = input('Order information by: [0]Distance, [1]Alphabetical order of category, [2]Alphabeticalorder of name --> R: ')
+    while order_list not in ["0", "1", "2"]:
+        print('Resposta inválida!')
+        order_list = input('Order information by: [0] distance, [1]Alphabetical order of category, [2]Alphabeticalorder of name\nR: ')
+
     if validate_coords(coords):
         coords_list = coords.split(',')
         coords1 = str(coords_list[0])
@@ -176,9 +211,15 @@ def main():
     url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()
     
     places_info = get_info(url)
+    places_info = order_to(order_list, places_info)
     
     print_info(places_info, category)
 
+    extra_info = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
+    while extra_info not in ['S', 'N']:
+        print('Responda de acordo com a forma que é pedida!')
+        extra_info = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
+    info_extra(extra_info, places_info)
 
 if __name__ == '__main__':
     main()
