@@ -28,6 +28,7 @@ def get_info(url):
         place_property_dict.pop('place_id')
         info_list.append(place_property_dict)
     
+    print(info_list)
     return info_list
 
 
@@ -111,8 +112,11 @@ def validate_radius(radius):
     return valid
 
 
-def order_to():
-    ...
+def order_to(order, url):
+    list_info = get_info(url)
+    if order not in [0, 1, 2]:
+        ...
+    
 
 
 def print_info(info, category):
