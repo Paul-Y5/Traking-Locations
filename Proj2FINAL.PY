@@ -111,6 +111,10 @@ def validate_radius(radius):
     return valid
 
 
+def order_to():
+    ...
+
+
 def print_info(info, category):
     count = 0
     distancia_total = 0
@@ -138,15 +142,15 @@ def print_info(info, category):
                 latitude = round(dic.get('lat', 0), 2)
                 longitude = round(dic.get('lon', 0), 2)
                 local = dic.get('city', 'Not found') 
-                distance = dic.get('distance', 'Not found')
+                distance = round(dic.get('distance', 0), 3)
                 fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
-                print(f"| {tipo_atração:^40s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:>3f}m | {fuso_horario:^15} |")
+                print(f"| {tipo_atração:^40s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^10}m | {fuso_horario:^15} |")
                 count += 1
                 distancia_total += distance
         print(f'Foram encontradas {count} atrações segundo as categorias indicadas!')
         print(f'A distância média às atrações é de {round(distancia_total / count)} m')
-        
-                    
+
+
 def main():
     '''função principal'''
     
