@@ -121,7 +121,7 @@ def print_info(info, category):
     if len(info) == 0:
         print('Nenhuma informação encontrada sobre o local!') 
     else:
-        print("| {:^40s} | {:^40s} | {:^20s} | {:^20s} |  {:^10s}   | {:^16s}|".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
+        print("| {:^40s} | {:^40s} | {:^20s} | {:^20s} | {:^10s} | {:^15s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
         for dic in info:
             if dic.get('name', '') == '':
                 continue
@@ -144,13 +144,15 @@ def print_info(info, category):
                 local = dic.get('city', 'Not found') 
                 distance = round(dic.get('distance', 0), 3)
                 fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
-                print(f"| {tipo_atração:^40s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^10}m | {fuso_horario:^15} |")
+                print(f"| {tipo_atração:^40s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:>3f}m | {fuso_horario:^15} |")
                 count += 1
                 distancia_total += distance
+        
+        print()
         print(f'Foram encontradas {count} atrações segundo as categorias indicadas!')
         print(f'A distância média às atrações é de {round(distancia_total / count)} m')
-
-
+        
+                    
 def main():
     '''função principal'''
     
@@ -166,7 +168,6 @@ def main():
         coords1 = str(coords_list[0])
         coords2 = str(coords_list[1])
         coords_reverse = coords2 + ',' + coords1
-        print(coords_reverse)
 
     url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()
     
@@ -174,6 +175,10 @@ def main():
     
     print_info(places_info, category)
 
+
 if __name__ == '__main__':
     main()
+    
+
+
 
