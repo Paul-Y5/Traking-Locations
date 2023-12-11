@@ -144,7 +144,9 @@ def print_info(info, category):
                 count += 1
                 distancia_total += distance
         print(f'Foram encontradas {count} atrações segundo as categorias indicadas!')
-        print(f'A distância média às atrações é de {round(distancia_total / count)} m')            
+        print(f'A distância média às atrações é de {round(distancia_total / count)} m')
+        
+                    
 def main():
     '''função principal'''
     
