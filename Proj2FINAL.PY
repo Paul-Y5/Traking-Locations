@@ -140,7 +140,7 @@ def print_info(info, category):
     if len(info) == 0:
         print('Nenhuma informação encontrada sobre o local!') 
     else:
-        print("| {:^40s} | {:^40s} | {:^20s} | {:^20s} | {:^13s} | {:^15s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância", "Fuso-horário"))
+        print("| {:^40s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^15s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"))
         for dic in info:
             if dic.get('name', '') == '':
                 continue
@@ -163,7 +163,7 @@ def print_info(info, category):
                 local = dic.get('city', 'Not found') 
                 distance = round(dic.get('distance', 0), 3)
                 fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
-                print(f"| {tipo_atração:^40s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:>3f}m | {fuso_horario:^15} |")
+                print(f"| {tipo_atração:^40s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |")
                 count += 1
                 distancia_total += distance
         
