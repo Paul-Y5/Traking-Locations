@@ -5,13 +5,13 @@ from timezonefinder import TimezoneFinder
 
 def set_of_categories():
     '''função que coloca as categorias de categories.txt num conjunto'''
-    categories_set = set()      #  criar um set vazio
+    categories_set = set()                                          # criar um set vazio
     with open('categories.txt', 'r', encoding='utf-8') as file:     # abrir ficheiro "categories.txt"
-        for line in file:   # iterar pelas linhas
-            category = line.strip() # remover tudo o que vier no final da linha
-            categories_set.add(category)        # adicionar categoria ao set
+        for line in file:                                           # iterar pelas linhas
+            category = line.strip()                                 # remover tudo o que vier no final da linha
+            categories_set.add(category)                            # adicionar categoria ao set
         
-    return categories_set       # returnar set
+    return categories_set                                           # returnar set
 
 
 def get_info(url):
@@ -34,87 +34,87 @@ def get_info(url):
 
 def validate_coords(place):
     '''Verifica se as coordenadas estão de acordo com o pedido na URL'''
-    virgula_count = 0           # variável para contar as virgulas inseridas
-    valid = True                # defenir o valor de valid como True
+    virgula_count = 0                                                       # variável para contar as virgulas inseridas
+    valid = True                                                            # defenir o valor de valid como True
 
-    for character in place:     # iterar pelos caracteres do valor inserido pelo utilizador
+    for character in place:                                                 # iterar pelos caracteres do valor inserido pelo utilizador
         if character.isnumeric() or character == '-' or character == '.':  
-            continue            # ignorar caso os caracteres possam ser colocados no URI da API
+            continue                                                        # ignorar caso os caracteres possam ser colocados no URI da API
         elif character == ',' and virgula_count < 1:
-            virgula_count += 1  # caso se trate de uma virgula e ainda não se tenha colocado outra, continuar
+            virgula_count += 1                                              # caso se trate de uma virgula e ainda não se tenha colocado outra, continuar
             continue
         else:
-            print('Formato das coordenadas incorreto!')  # imprimir mensagem de erro   
-            valid = False       # tudo o resto deverá tranformar a variável "valid" em False
+            print('Formato das coordenadas incorreto!')                     # imprimir mensagem de erro   
+            valid = False                                                   # tudo o resto deverá tranformar a variável "valid" em False
     
-    if valid:   # caso "valid" se mantenha True
-        try:    # tentar realizar as seguintes ações
-            coords_list = place.replace(',', ' ').split()   # colocar as duas coordenadas numa lista
-            latitude, longitude = map(float, coords_list)   # usamos "map" para tranformar todos os elementos da lista em float
+    if valid:                                                               # caso "valid" se mantenha True
+        try:                                                                # tentar realizar as seguintes ações
+            coords_list = place.replace(',', ' ').split()                   # colocar as duas coordenadas numa lista
+            latitude, longitude = map(float, coords_list)                   # usamos "map" para tranformar todos os elementos da lista em float
             
-            if -90 <= latitude <= 90 and -180 <= longitude <= 180:  # garantir que as coordenadas estão nos limites definindos
+            if -90 <= latitude <= 90 and -180 <= longitude <= 180:          # garantir que as coordenadas estão nos limites definindos
                 pass
             
             else:
-                print('Coordenadas fora do intervalo permitido!')   # imprimir mensagem de erro 
-                valid = False                                       # tornar a variavel "valid" em False
+                print('Coordenadas fora do intervalo permitido!')           # imprimir mensagem de erro 
+                valid = False                                               # tornar a variavel "valid" em False
         
-        except ValueError:  # não possível possivel transformar as coordenadas em float por terem caracteres como "-" e "." a mais
-            print('Formato das coordenadas incorreto!')     # imprimir mensagem de erro
-            valid = False                                   # tornar a variável "valid" em False
+        except ValueError:                                                  # não possível possivel transformar as coordenadas em float por terem caracteres como "-" e "." a mais
+            print('Formato das coordenadas incorreto!')                     # imprimir mensagem de erro
+            valid = False                                                   # tornar a variável "valid" em False
     else:                                               
         pass
     
-    return valid        # return o valor de "valid"
+    return valid                                                            # return o valor de "valid"
 
 
 def validate_categories(category):
     '''Verifica se as categorias estão de acordo com o pedido na URL'''
-    valid = True        # definir o valor de "valid" como True
-    for character in category:  # iterar pelos caracteres das categorias inseridas pelo utilizador
+    valid = True                                                            # definir o valor de "valid" como True
+    for character in category:                                              # iterar pelos caracteres das categorias inseridas pelo utilizador
         if character.isalpha() or character == ',' or character == '.':     # caso algum dos caracters for do tipo representado, continuar
             continue
-        else:           # se algum caracter n for do tipo acima, tornar "valid" em False
-            print('Formato das categorias incorreto!')      # imprimir mensagem de erro
+        else:                                                               # se algum caracter n for do tipo acima, tornar "valid" em False
+            print('Formato das categorias incorreto!')                      # imprimir mensagem de erro
             valid = False
 
-    users_categories_list = category.replace(',', ' ').split()      # colocar as categorias numa lista separadas por virgulas
+    users_categories_list = category.replace(',', ' ').split()              # colocar as categorias numa lista separadas por virgulas
 
-    if valid == False:  # se "valid" for False, ignorar
+    if valid == False:                                                      # se "valid" for False, ignorar
         pass
     else:
-        for categories in users_categories_list:        # iterar pelas categorias da lista e verificar se estão no set criado pela função "set_of_categories"
+        for categories in users_categories_list:                            # iterar pelas categorias da lista e verificar se estão no set criado pela função "set_of_categories"
             if categories not in set_of_categories():
-                print('Formato das categorias incorreto!')  # imprimir mensagem de erro
-                valid = False       # tornar a variàvel "valid" False
-                break               # parar o loop do for
+                print('Formato das categorias incorreto!')                  # imprimir mensagem de erro
+                valid = False                                               # tornar a variàvel "valid" False
+                break                                                       # parar o loop do for
        
     return valid
 
 
 def validate_radius(radius):
     '''Verifica se o raio estão de acordo com o pedido na URL'''
-    not_num = 0     # variável para contar os characters que não são números
-    ponto_count = 0 # variável para contar os caracteres que são pontos
-    valid = True    # defenir "valid" como True
-    for num in radius:      # iterar pelos caracteres do raio inserido pelo utilizador
-        if num.isnumeric() or (num == '.' and ponto_count < 2):     # caso o caracter for um número ou um ponto e só se tenha utilizado um ponto
+    not_num = 0                                                             # variável para contar os characters que não são números
+    ponto_count = 0                                                         # variável para contar os caracteres que são pontos
+    valid = True                                                            # defenir "valid" como True
+    for num in radius:                                                      # iterar pelos caracteres do raio inserido pelo utilizador
+        if num.isnumeric() or (num == '.' and ponto_count < 2):             # caso o caracter for um número ou um ponto e só se tenha utilizado um ponto
             continue        
-        else:       # tudo o resto, adiciona-se um à variável "not_num"
+        else:                                                               # tudo o resto, adiciona-se um à variável "not_num"
             not_num += 1
     
-    if not_num == 0:    # todos os caracteres dão números ou um ponto
+    if not_num == 0:                                                        # todos os caracteres dão números ou um ponto
         pass
     else:
-        print('Valor para raio não suportado!') # imprimir mensagem de erro
-        valid = False   # dar o valor de False a "valid"
+        print('Valor para raio não suportado!')                             # imprimir mensagem de erro
+        valid = False                                                       # dar o valor de False a "valid"
     
     return valid
 
 
 def order_to(order, places_info):
     """Função para ordenar a informação segundo a preferência do utilizador"""
-    info = []       # lista onde será colocada a informação
+    info = []                                                               # lista onde será colocada a informação
     if order == '0':
         for dic in places_info:
             if 'distance' in dic.keys():
@@ -199,7 +199,7 @@ def main():
     radius = input('Circle radius: ')
 
     order_list = input('Order information by: [0]Distance, [1]Alphabetical order of category, [2]Alphabeticalorder of name --> R: ')
-    while order_list not in ["0", "1", "2"]:
+    while order_list not in "123":
         print('Resposta inválida!')
         order_list = input('Order information by: [0] distance, [1]Alphabetical order of category, [2]Alphabeticalorder of name\nR: ')
 
