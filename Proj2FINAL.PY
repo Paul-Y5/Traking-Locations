@@ -144,7 +144,6 @@ def order_info(places_info):
 
 
 def print_info(info, category):
-    """Função para fazer a impressão da informação de forma formatada"""
     count = 0
     distancia_total = 0
     
@@ -218,7 +217,7 @@ def write_file(info, category):
         fin.write("\n")
 
         for dic in info:
-            if dic.get('name', '') == '':                                    #Verificar se existe a key name no dicionário de cada local
+            if dic.get('name', '') == '':
                 continue
             else:
                 users_categories_list = category.replace(',', ' ').split()
@@ -233,8 +232,7 @@ def write_file(info, category):
                 if tipo_atração[-2] == ',':
                     tipo_atração = tipo_atração[:-2] + tipo_atração[-1]
 
-                # Retirar cada um dos valores das keys pedidas para uma variável
-                name = dic.get('name')                                     
+                name = dic.get('name')
                 latitude = round(dic.get('lat', 0), 2)
                 longitude = round(dic.get('lon', 0), 2)
                 local = dic.get('city', 'Not found') 
@@ -244,21 +242,18 @@ def write_file(info, category):
                 fin.write(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |")
                 fin.write("\n")
                 count += 1
-                distancia_total += distance
+                total_distance += distance
         
-        print()
-        print(f'Foram encontradas {count} atrações segundo as categorias indicadas!')
-        print(f'A distância média às atrações é de {round(distancia_total / count)} m')
+        fin.write("\n")
+        fin.write('Aqui estão algumas informações extra:')
+        fin.write("\n")
 
-def info_extra(extra_info, places_info):
-    if extra_info in ['S']:
-        print('-' * 30)
-        print('Aqui estão algumas informações extra:')
-        print()
-        for dic in places_info:
-            if 'name' in dic.keys():
-                print(f"{dic['name']}: País: {dic['country']} [{dic['country_code']}]; Distrito:{dic['county']}; endereço: {dic['address_line2']}")
-                print('=' * 30)
+        for dic in info:
+            if 'name' in dic:
+                fin.write(f"{dic['name']}:") 
+                fin.write("\n")
+                fin.write((f"\tPaís --> {dic['country']}, {dic['country_code']}; Distrito --> {dic['county']}; endereço --> {dic['address_line2']}"))
+                fin.write("\n")
                 sleep(0.2)
 
         fin.write('Obrigado pela preferência! Volte sempre!')
@@ -288,15 +283,20 @@ def main():
     url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()
     
     places_info = get_info(url)
-    places_info = order_to(order_list, places_info)
     
-    print_info(places_info, category)
+    if len(places_info) == 0:
+        
+        print('Não foi encontrada informação acerca do local pedido!')
+    
+    else:
+        
+        ordered_places_info = order_info(places_info)
+        
+        print_info(ordered_places_info, category)
 
-    extra_info = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
-    while extra_info not in ['S', 'N']:
-        print('Responda de acordo com a forma que é pedida!')
-        extra_info = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
-    info_extra(extra_info, places_info)
+        print_info_extra(ordered_places_info)
+
+        write_file(ordered_places_info, category)
 
 if __name__ == '__main__':
     main()
