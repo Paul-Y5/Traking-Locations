@@ -136,6 +136,7 @@ def order_to(order, places_info):
 
 
 def print_info(info, category):
+    """Função para fazer a impressão da informação de forma formatada"""
     count = 0
     distancia_total = 0
     if len(info) == 0:
@@ -143,7 +144,7 @@ def print_info(info, category):
     else:
         print("| {:^40s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^15s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"))
         for dic in info:
-            if dic.get('name', '') == '':
+            if dic.get('name', '') == '':                                    #Verificar se existe a key name no dicionário de cada local
                 continue
             else:
                 users_categories_list = category.replace(',', ' ').split()
@@ -158,7 +159,8 @@ def print_info(info, category):
                 if tipo_atração[-2] == ',':
                     tipo_atração = tipo_atração[:-2] + tipo_atração[-1]
 
-                name = dic.get('name')
+                # Retirar cada um dos valores das keys pedidas para uma variável
+                name = dic.get('name')                                     
                 latitude = round(dic.get('lat', 0), 2)
                 longitude = round(dic.get('lon', 0), 2)
                 local = dic.get('city', 'Not found') 
@@ -173,6 +175,7 @@ def print_info(info, category):
         print(f'A distância média às atrações é de {round(distancia_total / count)} m')
 
 def info_extra(extra_info, places_info):
+    """Função para imprimir informação adicional se essa for pedida"""
     if extra_info in ['S']:
         print('-' * 30)
         print('Aqui estão algumas informações extra:')
@@ -217,7 +220,8 @@ def main():
     print_info(places_info, category)
 
     extra_info = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
-    while extra_info not in ['S', 'N']:
+
+    while extra_info not in ['S', 'N']:                                             #Validação do input de informaão extra
         print('Responda de acordo com a forma que é pedida!')
         extra_info = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
     info_extra(extra_info, places_info)
