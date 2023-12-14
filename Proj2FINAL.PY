@@ -295,8 +295,10 @@ def main():
         print_info(ordered_places_info, category)
 
         print_info_extra(ordered_places_info)
-
+        
+        print('Criando ficheiro .csv das informações...')
         write_file(ordered_places_info, category)
+        print('Ficheiro csv criado!')
 
 if __name__ == '__main__':
     main()
