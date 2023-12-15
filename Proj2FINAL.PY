@@ -4,6 +4,7 @@ from requests.structures import CaseInsensitiveDict
 from timezonefinder import TimezoneFinder
 from datetime import datetime
 import pytz
+import sys
 
 def set_of_categories():
     '''função que coloca as categorias de categories.txt num conjunto'''
@@ -171,11 +172,11 @@ def obter_fuso_horario(latitude, longitude):
     except Exception as e:
         return f"Erro ao obter o fuso horário: {str(e)}"
 
-def print_info(info, category):
+def print_info(info, category, file=sys.stdout):
     count = 0
     distancia_total = 0
     
-    print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"))
+    print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"), file=file)
     for dic in info:
         if dic.get('name', '') == '':
             continue
@@ -199,16 +200,16 @@ def print_info(info, category):
             distance = round(dic.get('distance', 0), 3)
             fuso_horario = obter_fuso_horario(latitude, longitude)
                 
-            print(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |")
+            print(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |", file=file)
             count += 1
             distancia_total += distance
         
     print()
-    print(f'Foram encontradas {count} atrações segundo as categorias indicadas!')
-    print(f'A distância média às atrações é de {round(distancia_total / count)} m')
+    print(f'Foram encontradas {count} atrações segundo as categorias indicadas!', file=file)
+    print(f'A distância média às atrações é de {round(distancia_total / count)} m', file=file)
 
 
-def print_info_extra(places_info):
+def print_info_extra(places_info, file=sys.stdout):
     '''Imprime informação extra se assim o utilizador desejar'''
 
     extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
@@ -218,78 +219,32 @@ def print_info_extra(places_info):
         extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
 
     if extra_info_input == 'S':  
-        print()
-        print('Aqui estão algumas informações extra:')
-        print()
+        print(file=file)
+        print('Aqui estão algumas informações extra:', file=file)
+        print(file=file)
 
         for dic in places_info:
             if 'name' in dic:
                 print(dic['name'],':') 
-                print((f"\tPaís --> {dic['country']}, {dic['country_code']}; Distrito --> {dic['county']}; endereço --> {dic['address_line2']}"))
-                print()
+                print((f"\tPaís --> {dic['country']}, {dic['country_code']}; Distrito --> {dic['county']}; endereço --> {dic['address_line2']}"), file=file)
+                print(file=file)
                 sleep(0.2)
 
-        print('Obrigado pela preferência! Volte sempre!')
+        print('Obrigado pela preferência! Volte sempre!', file=file)
 
     elif extra_info_input == 'N': 
-        print('Obrigado pela preferência! Volte sempre!')
+        print('Obrigado pela preferência! Volte sempre!', file=file)
+    return extra_info_input
 
 
 def write_file(info, category):
     '''Coloca as informações num ficheiro csv ordendas por distancia'''
-    count = 0
-    total_distance = 0
+    with open('places.csv', 'w', encoding='utf-8') as f:
+        print_info(info, category, f)
 
-    with open('places.csv', 'w', encoding='utf-8') as fin:
-        fin.write("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"))
-        fin.write("\n")
+        if print_info_extra == 'S':
+            print_info_extra(info)
 
-        for dic in info:
-            if dic.get('name', '') == '':
-                continue
-            else:
-                users_categories_list = category.replace(',', ' ').split()
-                tipo_atração = '' 
-                    
-                for item in dic.get('categories'):
-                    if '.' in item:
-                        continue
-                    else:
-                        tipo_atração += (item.capitalize() + ', ') if (item in users_categories_list) else ''
-                    
-                if tipo_atração[-2] == ',':
-                    tipo_atração = tipo_atração[:-2] + tipo_atração[-1]
-
-                name = dic.get('name')
-                latitude = round(dic.get('lat', 0), 2)
-                longitude = round(dic.get('lon', 0), 2)
-                local = dic.get('city', 'Not found') 
-                distance = round(dic.get('distance', 0), 3)
-                fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
-                    
-                fin.write(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |")
-                fin.write("\n")
-                count += 1
-                total_distance += distance
-        
-        fin.write("\n")
-        fin.write('Aqui estão algumas informações extra:')
-        fin.write("\n")
-
-        for dic in info:
-            if 'name' in dic:
-                fin.write(f"{dic['name']}:") 
-                fin.write("\n")
-                fin.write((f"\tPaís --> {dic['country']}, {dic['country_code']}; Distrito --> {dic['county']}; endereço --> {dic['address_line2']}"))
-                fin.write("\n")
-                sleep(0.2)
-
-        fin.write('Obrigado pela preferência! Volte sempre!')
-            
-        fin.write("\n")
-        fin.write(f'Foram encontradas {count} atrações segundo as categorias indicadas!')
-        fin.write("\n")
-        fin.write(f'A distância média às atrações é de {round(total_distance / count)} m')
     
                     
 def main():
