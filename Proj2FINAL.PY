@@ -17,6 +17,7 @@ def set_of_categories():
     return categories_set                                           # returnar set
 
 
+
 def get_info(url):
     '''Informação útil acerca do local e categorias escolhidas pelo utilizador'''
     info_list = []                                      # lista onde será colocada a informação obtida pela API 
@@ -33,6 +34,7 @@ def get_info(url):
         info_list.append(place_property_dict)           # adicionar dicionário com as informações à lista
     
     return info_list
+
 
 
 def validate_coords(place):
@@ -65,10 +67,9 @@ def validate_coords(place):
         except ValueError:                                                  # não possível possivel transformar as coordenadas em float por terem caracteres como "-" e "." a mais
             print('Formato das coordenadas incorreto!')                     # imprimir mensagem de erro
             valid = False                                                   # tornar a variável "valid" em False
-    else:                                               
-        pass
     
     return valid                                                            # return o valor de "valid"
+
 
 
 def validate_categories(category):
@@ -95,6 +96,7 @@ def validate_categories(category):
     return valid
 
 
+
 def validate_radius(radius):
     '''Verifica se o raio estão de acordo com o pedido na URL'''
     not_num = 0                                                             # variável para contar os characters que não são números
@@ -113,6 +115,7 @@ def validate_radius(radius):
         valid = False                                                       # dar o valor de False a "valid"
     
     return valid
+
 
 
 def order_info(places_info):
@@ -145,108 +148,104 @@ def order_info(places_info):
         
     return info_ordered
 
+
+
 def obter_fuso_horario(latitude, longitude):
+    '''Função para obter o fuso horário do local'''
     tf = TimezoneFinder()
     try:
-        # Obtém o nome do fuso horário a partir das coordenadas
-        timezone_str = tf.timezone_at(lat=latitude, lng=longitude)
+        
+        timezone_str = tf.timezone_at(lat=latitude, lng=longitude)                                          # Obtém o nome do fuso horário a partir das coordenadas
 
         if timezone_str:
-            # Obtém o objeto de fuso horário usando pytz
-            tz = pytz.timezone(timezone_str)
             
-            # Obtém o offset atual do fuso horário em relação ao UTC em minutos
-            offset_minutes = tz.utcoffset(datetime.now()).seconds // 60
+            tz = pytz.timezone(timezone_str)                                                                # Obtém o objeto de fuso horário usando pytz
+            
+            
+            offset_minutes = tz.utcoffset(datetime.now()).seconds // 60                                     # Obtém o offset atual do fuso horário em relação ao UTC em minutos
 
-            # Converte o offset para o formato GMT
+            
             offset_hours = offset_minutes // 60
-            offset_minutes = offset_minutes % 60
-            offset_str = f"{'' if offset_hours >= 0 else '-'}{abs(offset_hours):02d}:{offset_minutes:02d}"
+            offset_minutes = offset_minutes % 60                                                            
+            offset_str = f"{'' if offset_hours >= 0 else '-'}{abs(offset_hours):02d}:{offset_minutes:02d}"  # Converte o offset para o formato GMT
 
             tuplo_tz = (timezone_str + ':' + offset_str)
 
             return tuplo_tz
         else:
-            return "Não foi possível determinar o fuso horário para as coordenadas fornecidas."
+            return "Not Found"
 
     except Exception as e:
         return f"Erro ao obter o fuso horário: {str(e)}"
 
+
+
 def print_info(info, category, file=sys.stdout):
-    count = 0
-    distancia_total = 0
+    '''Imprime a informação no terminal'''
+    count = 0                                                                                                                                                                   # variável para contar o número de atrações
+    distancia_total = 0                                                                                                                                                         # variável para guardar a distância total
     
-    print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"), file=file)
-    for dic in info:
-        if dic.get('name', '') == '':
+    print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"), file=file)   # imprime o título da tabela com as devidas formatações
+    
+    for dic in info:                                                                                                                                                            # iterar pelos dicionários na lista com as informações                                                                                                                                                     
+        if dic.get('name', '') == '':                                                                                                                                           # caso a atração não tenha um nome, continuar
             continue
         else:
-            users_categories_list = category.replace(',', ' ').split()
-            tipo_atração = '' 
+            users_categories_list = category.replace(',', ' ').split()                                                                                                          # colocar as categorias inseridas pleo utilizador numa lista
+            tipo_atração = ''                                                                                                                                                   # variável inicial para tipo de atração
                 
-            for item in dic.get('categories'):
+            for item in dic.get('categories'):                                                                                                                      
                 if '.' in item:
-                        continue
+                        continue        # iterar pelas categorias do local e caso não tenha um '.' e estejam na lista de categorias introduzidas pelo utilizador, adicionar ao 'tipo_atracao'
                 else:
                         tipo_atração += (item.capitalize() + ', ') if (item in users_categories_list) else ''
                 
-            if tipo_atração[-2] == ',':
+            if tipo_atração[-2] == ',':                                     # remover a ultima vírgula
                     tipo_atração = tipo_atração[:-2] + tipo_atração[-1]
 
-            name = dic.get('name')
-            latitude = round(dic.get('lat', 0), 2)
-            longitude = round(dic.get('lon', 0), 2)
-            local = dic.get('city', 'Not found') 
-            distance = round(dic.get('distance', 0), 3)
-            fuso_horario = obter_fuso_horario(latitude, longitude)
+            name = dic.get('name')                                  # obter nome
+            latitude = round(dic.get('lat', 0), 2)                  # obter latitude
+            longitude = round(dic.get('lon', 0), 2)                 # obter longitude
+            local = dic.get('city', 'Not found')                    # obter local
+            distance = round(dic.get('distance', 0), 3)             # oobter distância
+            fuso_horario = obter_fuso_horario(latitude, longitude)  # obeter fusi horário
                 
-            print(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |", file=file)
-            count += 1
-            distancia_total += distance
+            print(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |", file=file)        # imprimir linha da tabela devidamente formatada
+            count += 1                          # adicionar a count
+            distancia_total += distance         # adicionar a distância total
         
     print()
-    print(f'Foram encontradas {count} atrações segundo as categorias indicadas!', file=file)
-    print(f'A distância média às atrações é de {round(distancia_total / count)} m', file=file)
+    print(f'Foram encontradas {count} atrações segundo as categorias indicadas!', file=file)        # imprimir o nº de locais encontrados
+    print(f'A distância média às atrações é de {round(distancia_total / count)} m', file=file)      # imprimir a distância média
+
 
 
 def print_info_extra(places_info, file=sys.stdout):
     '''Imprime informação extra se assim o utilizador desejar'''
 
-    extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
+    print(file=file)
+    print('Aqui estão algumas informações extra:', file=file)       # imprimir mensagem de informações extra
+    print(file=file)
 
-    while extra_info_input not in 'SN':
-        print('Responda de acordo com a forma que é pedida!')
-        extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
-
-    if extra_info_input == 'S':  
-        print(file=file)
-        print('Aqui estão algumas informações extra:', file=file)
-        print(file=file)
-
-        for dic in places_info:
-            if 'name' in dic:
-                print(dic['name'],':') 
-                print((f"\tPaís --> {dic['country']}, {dic['country_code']}; Distrito --> {dic['county']}; endereço --> {dic['address_line2']}"), file=file)
-                print(file=file)
-                sleep(0.2)
-
-        print('Obrigado pela preferência! Volte sempre!', file=file)
-
-    elif extra_info_input == 'N': 
-        print('Obrigado pela preferência! Volte sempre!', file=file)
-    return extra_info_input
+    for dic in places_info:
+        if 'name' in dic:
+            print((f"{dic['name']}:"), file=file) 
+            print((f"\tPaís --> {dic['country']}, {dic['country_code']}; Distrito --> {dic['county']}; endereço --> {dic['address_line2']}"), file=file)
+            print(file=file)
+            sleep(0.2)
 
 
-def write_file(info, category):
+
+def write_file(info, category, extra_info_input):
     '''Coloca as informações num ficheiro csv ordendas por distancia'''
     with open('places.csv', 'w', encoding='utf-8') as f:
         print_info(info, category, f)
 
-        if print_info_extra == 'S':
-            print_info_extra(info)
+        if extra_info_input == 'S':
+            print_info_extra(info, f)
 
-    
-                    
+
+
 def main():
     '''função principal'''
     
@@ -276,21 +275,32 @@ def main():
         ordered_places_info = order_info(places_info)
         
         print_info(ordered_places_info, category)
+        
+        extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
 
-        print_info_extra(ordered_places_info)
+        while extra_info_input not in 'SN':
+            print('Responda de acordo com a forma que é pedida!')
+            extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
+        
+        if extra_info_input == 'S':
+            print_info_extra(ordered_places_info)
         
         print('Criando ficheiro .csv das informações...')
-        write_file(ordered_places_info, category)
+        write_file(ordered_places_info, category, extra_info_input)
         print('Ficheiro csv criado!')
     
     mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]').upper()
+    
     while mais_places not in 'SN':
+        
         print('Resposta inválida!')
         mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]').upper()
 
+    
     if mais_places == 'S':
         main()
     else:
+        print('Obrigado pela preferência! Volte sempre!')
         quit()
 
 if __name__ == '__main__':
