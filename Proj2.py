@@ -1,64 +1,30 @@
-import requests
+from timezonefinder import TimezoneFinder
+from datetime import datetime
+import pytz
 
-# Base URL for the API
-base_url = "https://api.geoapify.com/v2/3b217b38a08846b19772470894a181b7"
+def obter_fuso_horario_gmt(latitude, longitude):
+    tf = TimezoneFinder()
 
-def get_posts():
-    """Get all posts."""
+    try:
+        # Obtém o nome do fuso horário a partir das coordenadas
+        timezone_str = tf.timezone_at(lat=latitude, lng=longitude)
 
-    response = requests.get(f"{base_url}/posts")
-    if response.status_code == 200:
-        return response.json()
+        if timezone_str:
+            # Obtém o objeto de fuso horário usando pytz
+            tz = pytz.timezone(timezone_str)
+            
+            # Obtém o offset atual do fuso horário em relação ao UTC em minutos
+            offset_minutes = tz.utcoffset(datetime.now()).seconds // 60
 
+            # Converte o offset para o formato GMT
+            offset_hours = offset_minutes // 60
+            offset_minutes = offset_minutes % 60
+            offset_str = f"{'' if offset_hours >= 0 else '-'}{abs(offset_hours):02d}:{offset_minutes:02d}"
 
-def get_posts_by_user(userId):
-    """Gets all posts of the user userId."""
+            return offset_str
+        else:
+            return "Não foi possível determinar o fuso horário para as coordenadas fornecidas."
 
-    # Create a dictionary with key:value pairs to pass in the URL query string
-    params = {'userId': userId}
-    response = requests.get(f"{base_url}", params=params)
-        # The params= argument is encoded in the URL query string.
+    except Exception as e:
+        return f"Erro ao obter o fuso horário: {str(e)}"
 
-    #print(response.request.url)  # Uncomment to see the constructed URL
-
-    if response.status_code == 200:
-        return response.json()  # decode JSON into a python object (list)
-
-
-def add_post(title, body, user_id):
-    """Add a new post."""
-
-    # Create a dict with the data to send
-    data = {
-        "title": title,
-        "body": body,
-        "userId": user_id
-    }
-
-    response = requests.post(f"{base_url}/posts", json=data)
-        # With json=... the request content is sent as JSON
-
-    if response.status_code == 201:
-        return response.json()
-
-
-def main():
-    # Uncomment to see all posts
-    #print("\nTesting get_posts")
-    #posts = get_posts()
-    #print(posts, end="\n\n")
-
-    print("\nTesting get_posts_by_user")
-    some_posts = get_posts_by_user(1)
-    print(some_posts)
-    # Should return a list of dictionaries: 
-    # [{'userId': 1, 'id': 1, 'title': 'sunt ...', 'body': 'quia ... '},
-    #  {'userId': 1, 'id': 2, 'title': 'qui ...', 'body': 'est ...'}]
-
-    print("\nTesting add_post")
-    added = add_post("A title", "Some content\nMore interesting content", 5)
-    print(repr(added))
-
-
-if __name__ == "__main__":
-    main()

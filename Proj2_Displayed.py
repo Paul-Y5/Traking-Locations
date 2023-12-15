@@ -233,8 +233,8 @@ class SimpleTkinterApp:
         result_text += f'Foram encontradas {count} atrações segundo as categorias indicadas!\n'
         result_text += f'A distância média às atrações é de {round(distancia_total / count)} m'
 
-        self.text_result.delete(1.0, tk.END)
-        self.text_result.insert(tk.END, result_text)
+        self.result_text.delete(1.0, tk.END)
+        self.result_text.insert(tk.END, result_text)
 
     def build_url(self, coords, category, radius):
         base_url = "https://api.geoapify.com/v2/places?"

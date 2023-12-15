@@ -1,7 +1,9 @@
 import requests
 from time import sleep
 from requests.structures import CaseInsensitiveDict
-from timezonefinder import TimezoneFinder 
+from timezonefinder import TimezoneFinder
+from datetime import datetime
+import pytz
 
 def set_of_categories():
     '''função que coloca as categorias de categories.txt num conjunto'''
@@ -142,12 +144,38 @@ def order_info(places_info):
         
     return info_ordered
 
+def obter_fuso_horario(latitude, longitude):
+    tf = TimezoneFinder()
+    try:
+        # Obtém o nome do fuso horário a partir das coordenadas
+        timezone_str = tf.timezone_at(lat=latitude, lng=longitude)
+
+        if timezone_str:
+            # Obtém o objeto de fuso horário usando pytz
+            tz = pytz.timezone(timezone_str)
+            
+            # Obtém o offset atual do fuso horário em relação ao UTC em minutos
+            offset_minutes = tz.utcoffset(datetime.now()).seconds // 60
+
+            # Converte o offset para o formato GMT
+            offset_hours = offset_minutes // 60
+            offset_minutes = offset_minutes % 60
+            offset_str = f"{'' if offset_hours >= 0 else '-'}{abs(offset_hours):02d}:{offset_minutes:02d}"
+
+            tuplo_tz = (timezone_str + ':' + offset_str)
+
+            return tuplo_tz
+        else:
+            return "Não foi possível determinar o fuso horário para as coordenadas fornecidas."
+
+    except Exception as e:
+        return f"Erro ao obter o fuso horário: {str(e)}"
 
 def print_info(info, category):
     count = 0
     distancia_total = 0
     
-    print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^15s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"))
+    print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"))
     for dic in info:
         if dic.get('name', '') == '':
             continue
@@ -169,7 +197,7 @@ def print_info(info, category):
             longitude = round(dic.get('lon', 0), 2)
             local = dic.get('city', 'Not found') 
             distance = round(dic.get('distance', 0), 3)
-            fuso_horario = TimezoneFinder().timezone_at(lng=longitude, lat=latitude)
+            fuso_horario = obter_fuso_horario(latitude, longitude)
                 
             print(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |")
             count += 1
@@ -213,7 +241,7 @@ def write_file(info, category):
     total_distance = 0
 
     with open('places.csv', 'w', encoding='utf-8') as fin:
-        fin.write("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^15s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"))
+        fin.write("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"))
         fin.write("\n")
 
         for dic in info:
