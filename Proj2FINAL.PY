@@ -8,13 +8,13 @@ import sys
 
 def set_of_categories():
     '''função que coloca as categorias de categories.txt num conjunto'''
-    categories_set = set()                                          # criar um set vazio
-    with open('categories.txt', 'r', encoding='utf-8') as file:     # abrir ficheiro "categories.txt"
-        for line in file:                                           # iterar pelas linhas
-            category = line.strip()                                 # remover tudo o que vier no final da linha
-            categories_set.add(category)                            # adicionar categoria ao set
+    categories_set = set()                                              # criar um set vazio
+    with open('categories.txt', 'r', encoding='utf-8') as file:         # abrir ficheiro "categories.txt"
+        for line in file:                                               # iterar pelas linhas
+            category = line.strip()                                     # remover tudo o que vier no final da linha
+            categories_set.add(category)                                # adicionar categoria ao set
         
-    return categories_set                                           # returnar set
+    return categories_set                                               # returnar set
 
 
 
@@ -175,24 +175,24 @@ def obter_fuso_horario(latitude, longitude):
         else:
             return "Not Found"
 
-    except Exception as e:
-        return f"Erro ao obter o fuso horário: {str(e)}"
+    except Exception:
+        return "Not Found"
 
 
 
 def print_info(info, category, file=sys.stdout):
     '''Imprime a informação no terminal'''
-    count = 0                                                                                                                                                                   # variável para contar o número de atrações
-    distancia_total = 0                                                                                                                                                         # variável para guardar a distância total
+    count = 0                                                                                                                                                                       # variável para contar o número de atrações
+    distancia_total = 0                                                                                                                                                             # variável para guardar a distância total
     
-    print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"), file=file)   # imprime o título da tabela com as devidas formatações
+    print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"), file=file)       # imprime o título da tabela com as devidas formatações
     
-    for dic in info:                                                                                                                                                            # iterar pelos dicionários na lista com as informações                                                                                                                                                     
-        if dic.get('name', '') == '':                                                                                                                                           # caso a atração não tenha um nome, continuar
+    for dic in info:                                                                                                                                                                # iterar pelos dicionários na lista com as informações                                                                                                                                                     
+        if dic.get('name', '') == '':                                                                                                                                               # caso a atração não tenha um nome, continuar
             continue
         else:
-            users_categories_list = category.replace(',', ' ').split()                                                                                                          # colocar as categorias inseridas pleo utilizador numa lista
-            tipo_atração = ''                                                                                                                                                   # variável inicial para tipo de atração
+            users_categories_list = category.replace(',', ' ').split()                                                                                                              # colocar as categorias inseridas pleo utilizador numa lista
+            tipo_atração = ''                                                                                                                                                       # variável inicial para tipo de atração
                 
             for item in dic.get('categories'):                                                                                                                      
                 if '.' in item:
@@ -229,8 +229,8 @@ def print_info_extra(places_info, file=sys.stdout):
 
     for dic in places_info:
         if 'name' in dic:
-            print((f"{dic['name']}:"), file=file) 
-            print((f"\tPaís --> {dic['country']}, {dic['country_code']}; Distrito --> {dic['county']}; endereço --> {dic['address_line2']}"), file=file)
+            print((f"{dic.get('name', 'Not Found')}:"), file=file)      # imprimir informação extra devidamente formatada
+            print((f"\tPaís --> {dic.get('country', 'Not Found')}, {dic.get('country_code', 'Not Found')}; Distrito --> {dic.get('county', 'Not Found')}; endereço --> {dic.get('address_line2', 'Not Found')}"), file=file)
             print(file=file)
             sleep(0.2)
 
@@ -239,66 +239,68 @@ def print_info_extra(places_info, file=sys.stdout):
 def write_file(info, category, extra_info_input):
     '''Coloca as informações num ficheiro csv ordendas por distancia'''
     with open('places.csv', 'w', encoding='utf-8') as f:
-        print_info(info, category, f)
+        print_info(info, category, f)       # escrever aquilo que é impresso no terminal no ficheiro .csv
 
         if extra_info_input == 'S':
-            print_info_extra(info, f)
+            print_info_extra(info, f)       # caso o utilizador deseje, escrever informação extra no ficheiro .csv
 
 
 
 def main():
     '''função principal'''
     
-    base_url = "https://api.geoapify.com/v2/places?"
-    apiKey = '5151ac446fb14f58b87dda914081fd3d'
+    base_url = "https://api.geoapify.com/v2/places?"            # URL base da API
+    apiKey = '5151ac446fb14f58b87dda914081fd3d'                 # API Key
     
-    coords = input('Place coordinates (lat,lon): ')
-    category = input('Category to search for: ')
-    radius = input('Circle radius: ')
+    coords = input('Place coordinates (lat,lon): ')             # pedir coordenadas
+    category = input('Category to search for: ')                # pedir por categorias
+    radius = input('Circle radius: ')                           # pedir raio
 
-    if validate_coords(coords):
-        coords_list = coords.split(',')
-        coords1 = str(coords_list[0])
+    if validate_coords(coords):                                 # caso as coordenadas tenham sido validadas:
+        coords_list = coords.split(',')                         # colocar coorenadas num lista
+        coords1 = str(coords_list[0])                           
         coords2 = str(coords_list[1])
-        coords_reverse = coords2 + ',' + coords1
+        coords_reverse = coords2 + ',' + coords1                # alterar a ordem das coordendas para cumprir com o que é pedido na API 
 
-    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()
     
-    places_info = get_info(url)
+    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()  # construir URL para pesquisa caso os parametros tenham sido validados corretamente de acordo com as funções
+    
+    places_info = get_info(url)                                                 # atribuir a places_info a lista que é returnada pela função 'get_info'
     
     if len(places_info) == 0:
-        
+                                                                                # se não existeram na API informações, imprimir mensagem a informar
         print('Não foi encontrada informação acerca do local pedido!')
     
     else:
         
-        ordered_places_info = order_info(places_info)
+        ordered_places_info = order_info(places_info)                           # ordenar informação como o utilizador desejar
         
-        print_info(ordered_places_info, category)
+        print_info(ordered_places_info, category)                               # imprimir informação no terminal
         
         extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
 
-        while extra_info_input not in 'SN':
+        while extra_info_input not in 'SN':                                     # perguntar ao utilizar se pretende receber informação extra acerca do local
             print('Responda de acordo com a forma que é pedida!')
             extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
         
         if extra_info_input == 'S':
-            print_info_extra(ordered_places_info)
+            print_info_extra(ordered_places_info)                               # imprimir informação extra, caso seja o caso 
         
         print('Criando ficheiro .csv das informações...')
-        write_file(ordered_places_info, category, extra_info_input)
+        write_file(ordered_places_info, category, extra_info_input)             # escrever ficheiro .csv
         print('Ficheiro csv criado!')
     
     mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]').upper()
     
+    
     while mais_places not in 'SN':
-        
+                                                                                                # ver se o utlizador pretende procurar por mais alguma atração
         print('Resposta inválida!')
         mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]').upper()
 
     
     if mais_places == 'S':
-        main()
+        main()                                                  # repetir o programa
     else:
         print('Obrigado pela preferência! Volte sempre!')
         quit()
