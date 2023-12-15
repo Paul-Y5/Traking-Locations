@@ -282,6 +282,16 @@ def main():
         print('Criando ficheiro .csv das informações...')
         write_file(ordered_places_info, category)
         print('Ficheiro csv criado!')
+    
+    mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]').upper()
+    while mais_places not in 'SN':
+        print('Resposta inválida!')
+        mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]').upper()
+
+    if mais_places == 'S':
+        main()
+    else:
+        quit()
 
 if __name__ == '__main__':
     main()
