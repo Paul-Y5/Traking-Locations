@@ -1,26 +1,47 @@
 |     Tipo Atração     |                   Nome                   |        Local         |     Coordenadas      | Distância [M]  |    Fuso-horário     |
-|    Accommodation     |          Domaine de la Brosette          |       Chanteau       |     47.97, 1.97      |      4395      | Europe/Paris:01:00 |
-|    Accommodation     |   Maison familliale de la Sablonnière    |  Marigny-les-Usages  |     47.96, 2.01      |      4481      | Europe/Paris:01:00 |
-|    Accommodation     |             The Condor Club              |        Loury         |     48.01, 2.06      |      4705      | Europe/Paris:01:00 |
-|    Accommodation     |                   CduC                   |        Loury         |     48.01, 2.06      |      4711      | Europe/Paris:01:00 |
-|    Accommodation     |                Le Marigny                |  Marigny-les-Usages  |     47.96, 2.01      |      4861      | Europe/Paris:01:00 |
-Foram encontradas 5 atrações segundo as categorias indicadas!
-A distância média às atrações é de 4631 m
+|    Accommodation     |             Pensão Parreira              |        Águeda        |     40.51, -8.45     |      4560      | Europe/Lisbon:00:00 |
+|    Accommodation     |              Hotel Paraíso               |  Oliveira do Bairro  |     40.51, -8.49     |      1775      | Europe/Lisbon:00:00 |
+|    Accommodation     |          Estalagem de Sangalhos          |        Anadia        |     40.48, -8.46     |      4208      | Europe/Lisbon:00:00 |
+|       Tourism        |       Baloiço dos Pinheiros Mansos       |  Oliveira do Bairro  |     40.51, -8.48     |      1814      | Europe/Lisbon:00:00 |
+|       Tourism        |              Lagoa do Paúl               |        Anadia        |     40.48, -8.5      |      2745      | Europe/Lisbon:00:00 |
+|       Tourism        |           Bordalo II - Cegonha           |  Oliveira do Bairro  |     40.51, -8.49     |      1624      | Europe/Lisbon:00:00 |
+|       Tourism        |   Carta de Foral de Oliveira do Bairro   |  Oliveira do Bairro  |     40.51, -8.5      |      1469      | Europe/Lisbon:00:00 |
+|       Tourism        |                 Cruzeiro                 |        Anadia        |     40.49, -8.47     |      2441      | Europe/Lisbon:00:00 |
+|       Tourism        |              Wayside shrine              |        Anadia        |     40.48, -8.45     |      4797      | Europe/Lisbon:00:00 |
+|       Tourism        |                Cristo Rei                |  Oliveira do Bairro  |     40.54, -8.51     |      4873      | Europe/Lisbon:00:00 |
+
+Foram encontradas 10 atrações segundo as categorias indicadas!
+A distância média às atrações é de 3031 m
 
 Aqui estão algumas informações extra:
 
-Domaine de la Brosette:
-	País --> France, fr; Distrito --> Loiret; endereço --> 674 Route d'Orléans, 45400 Chanteau, France
+Pensão Parreira:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Rua Sangalhesa, 3750-035 Águeda, Portugal
 
-Maison familliale de la Sablonnière:
-	País --> France, fr; Distrito --> Loiret; endereço --> Rue de la Sablonnière, 45760 Marigny-les-Usages, France
+Hotel Paraíso:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Rua Foral 6 de Abril de 1514, 3770-857 Oliveira do Bairro, Portugal
 
-The Condor Club:
-	País --> France, fr; Distrito --> Loiret; endereço --> Rue des Petites Vérelles, 45470 Loury, France
+Estalagem de Sangalhos:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Rua Narciso da Marça, 3781-908 Anadia, Portugal
 
-CduC:
-	País --> France, fr; Distrito --> Loiret; endereço --> Rue du Gros Chêne, 45470 Loury, France
+Baloiço dos Pinheiros Mansos:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Rua do Campo de Jogos, 3770-209 Oliveira do Bairro, Portugal
 
-Le Marigny:
-	País --> France, fr; Distrito --> Loiret; endereço --> Rue de la Gare, 45760 Marigny-les-Usages, France
+Lagoa do Paúl:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> EM 603-2, 3780-051 Anadia, Portugal
+
+Bordalo II - Cegonha:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Avenida Doutor Abílio Pereira Pinto, 3770-209 Oliveira do Bairro, Portugal
+
+Carta de Foral de Oliveira do Bairro:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Rua Bombeiros, 3770-209 Oliveira do Bairro, Portugal
+
+Cruzeiro:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Rua das Escolas, 3781-908 Anadia, Portugal
+
+Wayside shrine:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Largo do Cruzeiro, 3780-140 Anadia, Portugal
+
+Cristo Rei:
+	País --> Portugal, pt; Distrito --> Aveiro; endereço --> Rua do Lugar, 3770-057 Oliveira do Bairro, Portugal
 

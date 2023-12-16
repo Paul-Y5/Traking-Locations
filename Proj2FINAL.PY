@@ -8,7 +8,9 @@ import sys
 
 def set_of_categories():
     '''função que coloca as categorias de categories.txt num conjunto'''
+    
     categories_set = set()                                              # criar um set vazio
+    
     with open('categories.txt', 'r', encoding='utf-8') as file:         # abrir ficheiro "categories.txt"
         for line in file:                                               # iterar pelas linhas
             category = line.strip()                                     # remover tudo o que vier no final da linha
@@ -20,6 +22,7 @@ def set_of_categories():
 
 def get_info(url):
     '''Informação útil acerca do local e categorias escolhidas pelo utilizador'''
+    
     info_list = []                                      # lista onde será colocada a informação obtida pela API 
     headers = CaseInsensitiveDict()
     headers["Accept"] = "application/json"
@@ -40,19 +43,22 @@ def get_info(url):
 def validate_coords(place):
     '''Verifica se as coordenadas estão de acordo com o pedido na URL'''
     virgula_count = 0                                                       # variável para contar as virgulas inseridas
-    valid = True                                                            # defenir o valor de valid como True
+    valid = True                                                            # defenir o valor de 'valid' como True
 
-    for character in place:                                                 # iterar pelos caracteres do valor inserido pelo utilizador
+    for character in place:                                                 # iterar pelos caracteres das coordenadas inseridas pelo utilizador
         if character.isnumeric() or character == '-' or character == '.':  
             continue                                                        # ignorar caso os caracteres possam ser colocados no URI da API
+        
         elif character == ',' and virgula_count < 1:
             virgula_count += 1                                              # caso se trate de uma virgula e ainda não se tenha colocado outra, continuar
             continue
+        
         else:
             print('Formato das coordenadas incorreto!')                     # imprimir mensagem de erro   
             valid = False                                                   # tudo o resto deverá tranformar a variável "valid" em False
     
     if valid:                                                               # caso "valid" se mantenha True
+        
         try:                                                                # tentar realizar as seguintes ações
             coords_list = place.replace(',', ' ').split()                   # colocar as duas coordenadas numa lista
             latitude, longitude = map(float, coords_list)                   # usamos "map" para tranformar todos os elementos da lista em float
@@ -74,7 +80,9 @@ def validate_coords(place):
 
 def validate_categories(category):
     '''Verifica se as categorias estão de acordo com o pedido na URL'''
+    
     valid = True                                                            # definir o valor de "valid" como True
+    
     for character in category:                                              # iterar pelos caracteres das categorias inseridas pelo utilizador
         if character.isalpha() or character == ',' or character == '.':     # caso algum dos caracters for do tipo representado, continuar
             continue
@@ -91,7 +99,7 @@ def validate_categories(category):
             if categories not in set_of_categories():
                 print('Formato das categorias incorreto!')                  # imprimir mensagem de erro
                 valid = False                                               # tornar a variàvel "valid" False
-                break                                                       # parar o loop do for
+                break                                                       # parar o for loop
        
     return valid
 
@@ -99,17 +107,20 @@ def validate_categories(category):
 
 def validate_radius(radius):
     '''Verifica se o raio estão de acordo com o pedido na URL'''
-    not_num = 0                                                             # variável para contar os characters que não são números
+    
+    not_num = 0                                                             # variável para contar os caracteres que não são números
     ponto_count = 0                                                         # variável para contar os caracteres que são pontos
     valid = True                                                            # defenir "valid" como True
+    
     for num in radius:                                                      # iterar pelos caracteres do raio inserido pelo utilizador
         if num.isnumeric() or (num == '.' and ponto_count < 2):             # caso o caracter for um número ou um ponto e só se tenha utilizado um ponto
             continue        
-        else:                                                               # tudo o resto, adiciona-se um à variável "not_num"
+        else:                                                               # tudo o resto, adiciona-se uma unidade à variável "not_num"
             not_num += 1
     
-    if not_num == 0:                                                        # todos os caracteres dão números ou um ponto
+    if not_num == 0:                                                        # todos os caracteres são números ou um ponto
         pass
+    
     else:
         print('Valor para raio não suportado!')                             # imprimir mensagem de erro
         valid = False                                                       # dar o valor de False a "valid"
@@ -132,13 +143,13 @@ def order_info(places_info):
         for dic in places_info:
             if 'distance' in dic.keys():                                                        # ordenar informação por distancia
                 info.append(dic)
-        info_ordered = sorted(places_info, key= lambda v: v['distance'])
+        info_ordered = sorted(info, key= lambda v: v['distance'])
     
     elif order_input == "1":
         for dic in places_info:
             if 'categories' in dic.keys():                                                      # ordenar informação por categorias alfabeticamente
                 info.append(dic)
-        info_ordered = sorted(places_info, key= lambda v: v['categories'])
+        info_ordered = sorted(info, key= lambda v: v['categories'])
     
     elif order_input == "2":
         for dic in places_info:
@@ -152,6 +163,7 @@ def order_info(places_info):
 
 def obter_fuso_horario(latitude, longitude):
     '''Função para obter o fuso horário do local'''
+    
     tf = TimezoneFinder()
     try:
         
@@ -182,21 +194,25 @@ def obter_fuso_horario(latitude, longitude):
 
 def print_info(info, category, file=sys.stdout):
     '''Imprime a informação no terminal'''
+   
     count = 0                                                                                                                                                                       # variável para contar o número de atrações
     distancia_total = 0                                                                                                                                                             # variável para guardar a distância total
     
     print("| {:^20s} | {:^40s} | {:^20s} | {:^20s} | {:^14s} | {:^19s} |".format("Tipo Atração", "Nome", "Local", "Coordenadas", "Distância [M]", "Fuso-horário"), file=file)       # imprime o título da tabela com as devidas formatações
     
     for dic in info:                                                                                                                                                                # iterar pelos dicionários na lista com as informações                                                                                                                                                     
+        
         if dic.get('name', '') == '':                                                                                                                                               # caso a atração não tenha um nome, continuar
             continue
+        
         else:
             users_categories_list = category.replace(',', ' ').split()                                                                                                              # colocar as categorias inseridas pleo utilizador numa lista
             tipo_atração = ''                                                                                                                                                       # variável inicial para tipo de atração
                 
             for item in dic.get('categories'):                                                                                                                      
+                
                 if '.' in item:
-                        continue        # iterar pelas categorias do local e caso não tenha um '.' e estejam na lista de categorias introduzidas pelo utilizador, adicionar ao 'tipo_atracao'
+                        continue        # iterar pelas categorias associadas do local e caso não tenha um '.' e estejam na lista de categorias introduzidas pelo utilizador, adicionar ao 'tipo_atracao'
                 else:
                         tipo_atração += (item.capitalize() + ', ') if (item in users_categories_list) else ''
                 
@@ -214,7 +230,7 @@ def print_info(info, category, file=sys.stdout):
             count += 1                          # adicionar a count
             distancia_total += distance         # adicionar a distância total
         
-    print()
+    print(file=file)
     print(f'Foram encontradas {count} atrações segundo as categorias indicadas!', file=file)        # imprimir o nº de locais encontrados
     print(f'A distância média às atrações é de {round(distancia_total / count)} m', file=file)      # imprimir a distância média
 
@@ -228,6 +244,7 @@ def print_info_extra(places_info, file=sys.stdout):
     print(file=file)
 
     for dic in places_info:
+        
         if 'name' in dic:
             print((f"{dic.get('name', 'Not Found')}:"), file=file)      # imprimir informação extra devidamente formatada
             print((f"\tPaís --> {dic.get('country', 'Not Found')}, {dic.get('country_code', 'Not Found')}; Distrito --> {dic.get('county', 'Not Found')}; endereço --> {dic.get('address_line2', 'Not Found')}"), file=file)
@@ -238,6 +255,7 @@ def print_info_extra(places_info, file=sys.stdout):
 
 def write_file(info, category, extra_info_input):
     '''Coloca as informações num ficheiro csv ordendas por distancia'''
+    
     with open('places.csv', 'w', encoding='utf-8') as f:
         print_info(info, category, f)       # escrever aquilo que é impresso no terminal no ficheiro .csv
 
@@ -253,14 +271,14 @@ def main():
     apiKey = '5151ac446fb14f58b87dda914081fd3d'                 # API Key
     
     coords = input('Place coordinates (lat,lon): ')             # pedir coordenadas
-    category = input('Category to search for: ')                # pedir por categorias
+    category = input('Category to search for: ')                # pedir categorias
     radius = input('Circle radius: ')                           # pedir raio
 
     if validate_coords(coords):                                 # caso as coordenadas tenham sido validadas:
         coords_list = coords.split(',')                         # colocar coorenadas num lista
         coords1 = str(coords_list[0])                           
         coords2 = str(coords_list[1])
-        coords_reverse = coords2 + ',' + coords1                # alterar a ordem das coordendas para cumprir com o que é pedido na API 
+        coords_reverse = coords2 + ',' + coords1                # alterar a ordem das coordendas para cumprir com o que é pedido na URL da API 
 
     
     url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()  # construir URL para pesquisa caso os parametros tenham sido validados corretamente de acordo com as funções
@@ -268,7 +286,7 @@ def main():
     places_info = get_info(url)                                                 # atribuir a places_info a lista que é returnada pela função 'get_info'
     
     if len(places_info) == 0:
-                                                                                # se não existeram na API informações, imprimir mensagem a informar
+                                                                                # se não existeram informações na API imprimir mensagem a informar
         print('Não foi encontrada informação acerca do local pedido!')
     
     else:
@@ -301,6 +319,7 @@ def main():
     
     if mais_places == 'S':
         main()                                                  # repetir o programa
+    
     else:
         print('Obrigado pela preferência! Volte sempre!')
         quit()
