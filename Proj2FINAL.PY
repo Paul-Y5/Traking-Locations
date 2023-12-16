@@ -133,11 +133,11 @@ def order_info(places_info):
     """Função para ordenar a informação segundo a preferência do utilizador"""
     
     info = []                                                                                   # lista onde será colocada a informação ordenada
-    order_input = input('Order information by: \n[0]Distance\n[1]Category\n[2]Name\nR: ')
+    order_input = input('Order information by: \n[0]Distance\n[1]Category\n[2]Name\n[3]Location\nR: ')
     
-    while order_input not in "012":
+    while order_input not in "0123":
         print('Resposta inválida!')
-        order_input = input('Order information by: \n[0]Distance\n[1]Category\n[2]Name\nR: ')
+        order_input = input('Order information by: \n[0]Distance\n[1]Category\n[2]Name\n[3]Location\nR: ')
     
     if order_input == '0':
         for dic in places_info:
@@ -156,6 +156,12 @@ def order_info(places_info):
             if 'name' in dic.keys():
                 info.append(dic)                                                                # ordenar informação por nome alfabeticamente
         info_ordered = sorted(info, key= lambda v: v['name'])
+    
+    elif order_input == "3":
+        for dic in places_info:
+            if 'city' in dic.keys():
+                info.append(dic)                                                                # ordenar informação por localização alfabeticamente
+        info_ordered = sorted(info, key= lambda v: v['city'])
         
     return info_ordered
 
@@ -223,12 +229,12 @@ def print_info(info, category, file=sys.stdout):
             latitude = round(dic.get('lat', 0), 2)                  # obter latitude
             longitude = round(dic.get('lon', 0), 2)                 # obter longitude
             local = dic.get('city', 'Not found')                    # obter local
-            distance = round(dic.get('distance', 0), 3)             # oobter distância
-            fuso_horario = obter_fuso_horario(latitude, longitude)  # obeter fusi horário
+            distance = round(dic.get('distance', 0), 3)             # obter distância
+            fuso_horario = obter_fuso_horario(latitude, longitude)  # obter fuso horário
                 
             print(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |", file=file)        # imprimir linha da tabela devidamente formatada
-            count += 1                          # adicionar a count
-            distancia_total += distance         # adicionar a distância total
+            count += 1                          # adicionar uma unidade a count
+            distancia_total += distance         # adicionar a distancia da atração a 'distância total'
         
     print(file=file)
     print(f'Foram encontradas {count} atrações segundo as categorias indicadas!', file=file)        # imprimir o nº de locais encontrados
@@ -247,14 +253,14 @@ def print_info_extra(places_info, file=sys.stdout):
         
         if 'name' in dic:
             print((f"{dic.get('name', 'Not Found')}:"), file=file)      # imprimir informação extra devidamente formatada
-            print((f"\tPaís --> {dic.get('country', 'Not Found')}, {dic.get('country_code', 'Not Found')}; Distrito --> {dic.get('county', 'Not Found')}; endereço --> {dic.get('address_line2', 'Not Found')}"), file=file)
+            print((f"\tPaís --> {dic.get('country', 'Not Found')}, {dic.get('country_code', 'Not Found')}; Distrito --> {dic.get('county', 'Not Found')}; Endereço --> {dic.get('address_line2', 'Not Found')}"), file=file)
             print(file=file)
             sleep(0.2)
 
 
 
 def write_file(info, category, extra_info_input):
-    '''Coloca as informações num ficheiro csv ordendas por distancia'''
+    '''Coloca as informações num ficheiro csv ordendas por distância'''
     
     with open('places.csv', 'w', encoding='utf-8') as f:
         print_info(info, category, f)       # escrever aquilo que é impresso no terminal no ficheiro .csv
@@ -281,7 +287,7 @@ def main():
         coords_reverse = coords2 + ',' + coords1                # alterar a ordem das coordendas para cumprir com o que é pedido na URL da API 
 
     
-    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=20&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()  # construir URL para pesquisa caso os parametros tenham sido validados corretamente de acordo com as funções
+    url = (f'{base_url}categories={category}&filter=circle:{coords_reverse},{radius}&bias=proximity:{coords_reverse}&limit=500&apiKey={apiKey}') if (validate_coords(coords) and validate_categories(category) and validate_radius(radius)) else main()  # construir URL para pesquisa caso os parametros tenham sido validados corretamente de acordo com as funções
     
     places_info = get_info(url)                                                 # atribuir a places_info a lista que é returnada pela função 'get_info'
     
