@@ -1,8 +1,9 @@
-import requests
 from time import sleep
 from requests.structures import CaseInsensitiveDict
 from timezonefinder import TimezoneFinder
 from datetime import datetime
+import os
+import requests
 import pytz
 import sys
 
@@ -279,16 +280,22 @@ def main():
         
         extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
 
-        while extra_info_input not in 'SN':                                     # perguntar ao utilizar se pretende receber informação extra acerca do local
+        while extra_info_input not in 'SN':                                     # perguntar ao utilizador se pretende receber informação extra acerca do local
             print('Responda de acordo com a forma que é pedida!')
             extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
         
         if extra_info_input == 'S':
-            print_info_extra(ordered_places_info)                               # imprimir informação extra, caso seja o caso 
+            print_info_extra(ordered_places_info)                               # imprimir informação extra, se for o caso
         
-        print('Criando ficheiro .csv das informações...')
-        write_file(ordered_places_info, category, extra_info_input)             # escrever ficheiro .csv
-        print('Ficheiro csv criado!')
+        csv = input('Deseja exporta a informação para um ficheiro de texto .csv? [S/N]: ').upper()   # perguntar ao utilizador se pretende exportar as informações fornecidas
+        while csv not in 'SN':
+            print('Responda de acordo com a forma que é pedida!')
+            csv = input('Deseja exporta a informação para um ficheiro de texto .csv? [S/N]: ').upper()
+
+        if csv == 'S':
+            print('Criando ficheiro .csv das informações...')
+            write_file(ordered_places_info, category, extra_info_input)             # escrever ficheiro .csv
+            print('Ficheiro csv criado!')
     
     mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]').upper()
     
@@ -300,9 +307,20 @@ def main():
 
     
     if mais_places == 'S':
+        print('Reiniciando...')
+        sleep(1.5)
+        if os.name == 'nt':                                     #verificar se o sistema operativo é windows
+            os.system('cls')                                    #Limpar o ecrã
+        else:                                                   #se não for windows
+            os.system('clear')                                  #limpa o ecrã linux
         main()                                                  # repetir o programa
     else:
         print('Obrigado pela preferência! Volte sempre!')
+        sleep(2)
+        if os.name == 'nt':            
+            os.system('cls')          
+        else:                          
+            os.system('clear')         
         quit()
 
 if __name__ == '__main__':
