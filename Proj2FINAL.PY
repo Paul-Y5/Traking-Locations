@@ -139,15 +139,8 @@ def order_info(places_info, category):
     while order_input not in "0123":
         print('Resposta inválida!')
         order_input = input('Order information by: \n[0]Distance\n[1]Category\n[2]Name\n[3]Location\nR: ')
-    
-    if order_input == '0':
-        for dic in places_info:
-            if 'distance' in dic.keys():                                                        # ordenar informação por distancia
-                info.append(dic)
-        info_ordered = sorted(info, key= lambda v: v['distance'])
-    
-    elif order_input == "1":
-        for dic in places_info:                                                 # iterar pelos dicionários na lista com as informações                                                                                                                                                     
+
+    for dic in places_info:                                                 # iterar pelos dicionários na lista com as informações                                                                                                                                                     
 
             users_categories_list = category.replace(',', ' ').split()          # colocar as categorias inseridas pleo utilizador numa lista
             categories_list = []                                                # lista inicial para tipo de atração
@@ -160,10 +153,17 @@ def order_info(places_info, category):
                     categories_list.append(item.capitalize()) if (item in users_categories_list) else None      # adicionar categorias à lista inicial
             
             dic['categories'] = categories_list                                                 # alterar o valor da key 'categories' no dicionario para poder ordenar corretamente
-                
+    
+    if order_input == '0':
+        for dic in places_info:
+            if 'distance' in dic.keys():                                                        # ordenar informação por distancia
+                info.append(dic)
+        info_ordered = sorted(info, key= lambda v: v['distance'])
+    
+    elif order_input == "1":
+        for dic in places_info:
             if 'categories' in dic.keys():                                                      # ordenar informação por categorias alfabeticamente
                 info.append(dic)
-        
         info_ordered = sorted(info, key= lambda v: v['categories'])
     
     elif order_input == "2":
@@ -272,7 +272,7 @@ def write_file(info, category, extra_info_input):
     '''Coloca as informações num ficheiro csv ordendas por distância'''
     
     with open('places.csv', 'w', encoding='utf-8') as f:
-        print_info(info, category, f)       # escrever aquilo que é impresso no terminal no ficheiro .csv
+        print_info(info, f)       # escrever aquilo que é impresso no terminal no ficheiro .csv
 
         if extra_info_input == 'S':
             print_info_extra(info, f)       # caso o utilizador deseje, escrever informação extra no ficheiro .csv

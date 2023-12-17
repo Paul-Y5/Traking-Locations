@@ -1,47 +1,28 @@
 |     Tipo Atração     |                   Nome                   |        Local         |     Coordenadas      | Distância [M]  |    Fuso-horário     |
-|    Accommodation     |              Hotel Paraíso               |  Oliveira do Bairro  |     40.51, -8.49     |      1775      | Europe/Lisbon:00:00 |
-|    Accommodation     |          Estalagem de Sangalhos          |        Anadia        |     40.48, -8.46     |      4208      | Europe/Lisbon:00:00 |
-|    Accommodation     |             Pensão Parreira              |        Águeda        |     40.51, -8.45     |      4560      | Europe/Lisbon:00:00 |
-|       Tourism        |   Carta de Foral de Oliveira do Bairro   |  Oliveira do Bairro  |     40.51, -8.5      |      1469      | Europe/Lisbon:00:00 |
-|       Tourism        |           Bordalo II - Cegonha           |  Oliveira do Bairro  |     40.51, -8.49     |      1624      | Europe/Lisbon:00:00 |
-|       Tourism        |       Baloiço dos Pinheiros Mansos       |  Oliveira do Bairro  |     40.51, -8.48     |      1814      | Europe/Lisbon:00:00 |
-|       Tourism        |                 Cruzeiro                 |        Anadia        |     40.49, -8.47     |      2441      | Europe/Lisbon:00:00 |
-|       Tourism        |              Lagoa do Paúl               |        Anadia        |     40.48, -8.5      |      2745      | Europe/Lisbon:00:00 |
-|       Tourism        |              Wayside shrine              |        Anadia        |     40.48, -8.45     |      4797      | Europe/Lisbon:00:00 |
-|       Tourism        |                Cristo Rei                |  Oliveira do Bairro  |     40.54, -8.51     |      4873      | Europe/Lisbon:00:00 |
+|       Tourism        |          Château de la Brosette          |       Chanteau       |     47.97, 1.97      |      4380      | Europe/Paris:01:00 |
+|    Accommodation     |          Domaine de la Brosette          |       Chanteau       |     47.97, 1.97      |      4395      | Europe/Paris:01:00 |
+|       Tourism        |                 Le Turco                 |       Chanteau       |     47.96, 1.96      |      5081      | Europe/Paris:01:00 |
+|       Tourism        |          Tombe d'un Turco 1870           |       Chanteau       |     47.96, 1.96      |      5082      | Europe/Paris:01:00 |
+|    Accommodation     |               Les Goumiers               |       Chanteau       |     47.96, 1.98      |      5190      | Europe/Paris:01:00 |
+|       Tourism        |           Château de Cossoles            |       Chevilly       |     48.02, 1.93      |      6104      | Europe/Paris:01:00 |
+|    Accommodation     |               Batiment 026               |  Fleury-les-Aubrais  |     47.95, 1.94      |      6831      | Europe/Paris:01:00 |
+|       Tourism        |          Château du Coudreceau           |        Loury         |     48.01, 2.06      |      4697      | Europe/Paris:01:00 |
+|    Accommodation     |             The Condor Club              |        Loury         |     48.01, 2.06      |      4705      | Europe/Paris:01:00 |
+|    Accommodation     |                   CduC                   |        Loury         |     48.01, 2.06      |      4711      | Europe/Paris:01:00 |
+|       Tourism        |          Château de la Chesnaye          |        Loury         |     48.01, 2.07      |      5212      | Europe/Paris:01:00 |
+|       Tourism        |          Château de la Roncière          |        Loury         |     47.98, 2.07      |      5913      | Europe/Paris:01:00 |
+|       Tourism        |          Château de l'Ermitage           |        Loury         |     48.01, 2.08      |      6042      | Europe/Paris:01:00 |
+|       Tourism        |              Pot de crayon               |        Loury         |      48.0, 2.08      |      6314      | Europe/Paris:01:00 |
+|       Tourism        |             Château du Bourg             |        Loury         |      48.0, 2.09      |      6366      | Europe/Paris:01:00 |
+|    Accommodation     |     La Maison de Brian & Christiane      |        Loury         |      48.0, 2.09      |      6654      | Europe/Paris:01:00 |
+|       Tourism        |        Château des Saint-Germains        |        Loury         |     48.03, 2.09      |      7921      | Europe/Paris:01:00 |
+|    Accommodation     |   Maison familliale de la Sablonnière    |  Marigny-les-Usages  |     47.96, 2.01      |      4481      | Europe/Paris:01:00 |
+|    Accommodation     |                Le Marigny                |  Marigny-les-Usages  |     47.96, 2.01      |      4861      | Europe/Paris:01:00 |
+|       Tourism        |         Château de Charbonnière          | Saint-Jean-de-Braye  |     47.93, 1.99      |      7285      | Europe/Paris:01:00 |
+|       Tourism        |           Château de la Mothe            |  Saint-Lyé-la-Forêt  |     48.05, 1.98      |      5307      | Europe/Paris:01:00 |
+|    Accommodation     |                  Ecurie                  |       Vennecy        |     47.95, 2.04      |      6421      | Europe/Paris:01:00 |
+|    Accommodation     |              La Basserelle               |       Vennecy        |     47.95, 2.04      |      6432      | Europe/Paris:01:00 |
+|    Accommodation     |                Le Cellier                |       Vennecy        |     47.95, 2.04      |      6450      | Europe/Paris:01:00 |
 
-Foram encontradas 10 atrações segundo as categorias indicadas!
-A distância média às atrações é de 3031 m
-
-Aqui estão algumas informações extra:
-
-Hotel Paraíso:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Rua Foral 6 de Abril de 1514, 3770-857 Oliveira do Bairro, Portugal
-
-Estalagem de Sangalhos:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Rua Narciso da Marça, 3781-908 Anadia, Portugal
-
-Pensão Parreira:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Rua Sangalhesa, 3750-035 Águeda, Portugal
-
-Carta de Foral de Oliveira do Bairro:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Rua Bombeiros, 3770-209 Oliveira do Bairro, Portugal
-
-Bordalo II - Cegonha:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Avenida Doutor Abílio Pereira Pinto, 3770-209 Oliveira do Bairro, Portugal
-
-Baloiço dos Pinheiros Mansos:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Rua do Campo de Jogos, 3770-209 Oliveira do Bairro, Portugal
-
-Cruzeiro:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Rua das Escolas, 3781-908 Anadia, Portugal
-
-Lagoa do Paúl:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> EM 603-2, 3780-051 Anadia, Portugal
-
-Wayside shrine:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Largo do Cruzeiro, 3780-140 Anadia, Portugal
-
-Cristo Rei:
-	País --> Portugal, pt; Distrito --> Aveiro; Endereço --> Rua do Lugar, 3770-057 Oliveira do Bairro, Portugal
-
+Foram encontradas 24 atrações segundo as categorias indicadas!
+A distância média às atrações é de 5701 m
