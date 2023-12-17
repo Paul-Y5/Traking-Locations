@@ -130,7 +130,7 @@ def validate_radius(radius):
 
 
 
-def order_info(places_info):
+def order_info(places_info, category):
     """Função para ordenar a informação segundo a preferência do utilizador"""
     
     info = []                                                                                   # lista onde será colocada a informação ordenada
@@ -147,9 +147,23 @@ def order_info(places_info):
         info_ordered = sorted(info, key= lambda v: v['distance'])
     
     elif order_input == "1":
-        for dic in places_info:
+        for dic in places_info:                                                 # iterar pelos dicionários na lista com as informações                                                                                                                                                     
+
+            users_categories_list = category.replace(',', ' ').split()          # colocar as categorias inseridas pleo utilizador numa lista
+            categories_list = []                                                # lista inicial para tipo de atração
+            
+            for item in dic.get('categories'):                                                                                                                      
+                
+                if '.' in item:
+                        continue        # iterar pelas categorias associadas do local e caso não tenha um '.' e estejam na lista de categorias introduzidas pelo utilizador, adicionar à lista de categorias
+                else:
+                    categories_list.append(item.capitalize()) if (item in users_categories_list) else None      # adicionar categorias à lista inicial
+            
+            dic['categories'] = categories_list                                                 # alterar o valor da key 'categories' no dicionario para poder ordenar corretamente
+                
             if 'categories' in dic.keys():                                                      # ordenar informação por categorias alfabeticamente
                 info.append(dic)
+        
         info_ordered = sorted(info, key= lambda v: v['categories'])
     
     elif order_input == "2":
@@ -199,7 +213,7 @@ def obter_fuso_horario(latitude, longitude):
 
 
 
-def print_info(info, category, file=sys.stdout):
+def print_info(info, file=sys.stdout):
     '''Imprime a informação no terminal'''
    
     count = 0                                                                                                                                                                       # variável para contar o número de atrações
@@ -213,18 +227,12 @@ def print_info(info, category, file=sys.stdout):
             continue
         
         else:
-            users_categories_list = category.replace(',', ' ').split()                                                                                                              # colocar as categorias inseridas pleo utilizador numa lista
             tipo_atração = ''                                                                                                                                                       # variável inicial para tipo de atração
                 
-            for item in dic.get('categories'):                                                                                                                      
+            for item in dic.get('categories'):  
+                tipo_atração += (item.capitalize() + ', ')          # obter tipo de atração                                                                                                           
                 
-                if '.' in item:
-                        continue        # iterar pelas categorias associadas do local e caso não tenha um '.' e estejam na lista de categorias introduzidas pelo utilizador, adicionar ao 'tipo_atracao'
-                else:
-                        tipo_atração += (item.capitalize() + ', ') if (item in users_categories_list) else ''
-                
-            if tipo_atração[-2] == ',':                                     # remover a ultima vírgula
-                    tipo_atração = tipo_atração[:-2] + tipo_atração[-1]
+            tipo_atração = tipo_atração[:-2] + tipo_atração[-1]     # remover a ultima vírgula
 
             name = dic.get('name')                                  # obter nome
             latitude = round(dic.get('lat', 0), 2)                  # obter latitude
@@ -298,9 +306,9 @@ def main():
     
     else:
         
-        ordered_places_info = order_info(places_info)                           # ordenar informação como o utilizador desejar
+        ordered_places_info = order_info(places_info, category)                 # ordenar informação como o utilizador desejar
         
-        print_info(ordered_places_info, category)                               # imprimir informação no terminal
+        print_info(ordered_places_info)                                         # imprimir informação no terminal
         
         extra_info_input = input('Deseja ver informação adicional sobre os locais que pesquisou? [S/N]: ').upper()
 
@@ -312,16 +320,19 @@ def main():
             print_info_extra(ordered_places_info)                               # imprimir informação extra, se for o caso
         
         csv = input('Deseja exporta a informação para um ficheiro de texto .csv? [S/N]: ').upper()   # perguntar ao utilizador se pretende exportar as informações fornecidas
+        
         while csv not in 'SN':
+            
             print('Responda de acordo com a forma que é pedida!')
             csv = input('Deseja exporta a informação para um ficheiro de texto .csv? [S/N]: ').upper()
 
         if csv == 'S':
+            
             print('Criando ficheiro .csv das informações...')
             write_file(ordered_places_info, category, extra_info_input)             # escrever ficheiro .csv
             print('Ficheiro csv criado!')
     
-    mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]').upper()
+    mais_places = input('Deseja obter mais informações sobre outros locais ou categorias? [S/N]: ').upper()
     
     
     while mais_places not in 'SN':
@@ -331,19 +342,25 @@ def main():
 
     
     if mais_places == 'S':
+        
         print('Reiniciando...')
         sleep(1.5)
-        if os.name == 'nt':                                     #verificar se o sistema operativo é windows
-            os.system('cls')                                    #Limpar o ecrã
-        else:                                                   #se não for windows
-            os.system('clear')                                  #limpa o ecrã linux
+        
+        if os.name == 'nt':                                     # verificar se o sistema operativo é windows
+            os.system('cls')                                    # Limpar o ecrã
+        
+        else:                                                   # se não for windows
+            os.system('clear')                                  # limpa o ecrã linux
+        
         main()                                                  # repetir o programa
     
     else:
         print('Obrigado pela preferência! Volte sempre!')
         sleep(2)
+        
         if os.name == 'nt':            
             os.system('cls')          
+        
         else:                          
             os.system('clear')         
         quit()
