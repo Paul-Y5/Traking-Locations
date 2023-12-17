@@ -1,3 +1,4 @@
+# 119896, 118741
 from time import sleep
 from requests.structures import CaseInsensitiveDict
 from timezonefinder import TimezoneFinder
@@ -6,6 +7,7 @@ import os
 import requests
 import pytz
 import sys
+
 
 def set_of_categories():
     '''função que coloca as categorias de categories.txt num conjunto'''
