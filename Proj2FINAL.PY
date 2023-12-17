@@ -1,7 +1,7 @@
 from time import sleep
 from requests.structures import CaseInsensitiveDict
 from timezonefinder import TimezoneFinder
-from datetime import datetime
+from datetime import datetime                                           # importar bibliotecas necessárias 
 import os
 import requests
 import pytz
@@ -241,6 +241,7 @@ def print_info(info, file=sys.stdout):
             distance = round(dic.get('distance', 0), 3)             # obter distância
             fuso_horario = obter_fuso_horario(latitude, longitude)  # obter fuso horário
                 
+            
             print(f"| {tipo_atração:^20s} | {name:^40s} | {local: ^20s} | {str(latitude) + ', ' + str(longitude):^20s} |  {distance:^13} | {fuso_horario:^15} |", file=file)        # imprimir linha da tabela devidamente formatada
             count += 1                          # adicionar uma unidade a count
             distancia_total += distance         # adicionar a distancia da atração a 'distância total'
